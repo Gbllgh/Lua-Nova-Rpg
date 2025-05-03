@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const loggedPlayer = JSON.parse(sessionStorage.getItem('loggedPlayer'));
     
     if (!loggedPlayer) {
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
         return;
     }
 
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Sistema de logout
     logoutBtn.addEventListener('click', function() {
         sessionStorage.removeItem('loggedPlayer');
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
     });
 
     // Geração de PDF
