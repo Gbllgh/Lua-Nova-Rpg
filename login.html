@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Lua Nova RPG</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="login-container">
+        <h1>Login</h1>
+        <div id="login-message" class="message"></div>
+        
+        <div class="form-group">
+            <label for="player-name" class="inline-label">Seu Nome:</label>
+            <select id="player-name">
+                <option value="">Selecione seu nome</option>
+                <option value="jogador1">Bia</option>
+                <option value="jogador2">Pedro</option>
+                <option value="jogador3">Julia</option>
+                <option value="jogador4">Kaillan</option>
+               <!-- <option value="jogador5">Miguel</option>
+                <option value="jogador6">Isabel</option> -->
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="player-password" class="inline-label">Senha:</label>
+            <div class="password-container">
+                <input type="password" id="player-password" placeholder="Digite sua senha">
+                <i class="fas fa-eye-slash" id="toggle-password"></i>
+            </div>
+        </div>
+
+        <button id="login-btn">
+            <span id="login-text">Entrar</span>
+            <div id="login-spinner" class="spinner hidden"></div>
+        </button>
+
+        
+        <div id="login-attempts" class="hidden">
+            Tentativas restantes: <span id="attempts-counter">3</span>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+</body>
+</html>

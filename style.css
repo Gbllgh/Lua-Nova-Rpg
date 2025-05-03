@@ -1,0 +1,216 @@
+body {
+    background: 
+        linear-gradient(to bottom, rgba(26, 0, 51, 0.8), rgba(51, 1, 80, 0.9)),
+        url('Wide\ LN.png') center/cover no-repeat fixed;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+#login-container {
+    
+    background-color: rgba(51, 1, 80, 0.85);
+    border: 1px solid #c053db;
+    border-radius: 10px;
+    padding: 30px;
+    backdrop-filter: blur(3px);
+    box-shadow: 0 0 25px rgba(192, 83, 219, 0.4);
+    max-width: 400px;
+    margin: 0 auto ;
+    position: relative;
+    top: 100px;
+
+    transition: transform 0.3s ease;
+}
+
+#login-container:hover {
+    transform: translateY(-5px);
+}
+
+.hidden {
+    display: none;
+}
+
+.message {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+}
+
+.message.error {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.message.success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.password-container {
+    position: relative;
+}
+
+#toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #c053db;
+}
+
+/* Adicione ou modifique estas regras */
+#login-spinner {
+    display: none; /* Começa oculto */
+    border: 2px solid rgba(255, 255, 255, 0.76);
+    border-radius: 50%;
+    border-top: 2px solid #c053db;
+    width: 16px;
+    height: 16px;
+    animation: spin 1s linear infinite;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+/* Garanta que o spinner só apareça quando tiver a classe 'active' */
+#login-spinner.active {
+    display: inline-block;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#login-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #330150;
+    border-radius: 8px;
+    border: 2px solid #c053db;
+}
+
+#login-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+#login-container h1, label{
+    color:#c053db;
+}
+
+#player-name, #player-password{
+    background-color: #240138;
+    border-color: #c053db;
+    color: #c053db;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.inline-label {
+    margin-right: 10px;
+    min-width: 80px; /* Largura fixa para alinhamento */
+}
+
+.password-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    flex-grow: 1;
+}
+
+#player-password {
+    flex-grow: 1;
+    padding: 8px;
+    background-color: #1a0033;
+    color: #c053db;
+    border: 1px solid #c053db;
+    border-radius: 4px;
+}
+
+#toggle-password {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    color: #c053db;
+}
+
+#player-name {
+    flex-grow: 1;
+    padding: 8px;
+    background-color: #1a0033;
+    color: #c053db;
+    border: 1px solid #c053db;
+    border-radius: 4px;
+}
+
+/* Estilo específico para o botão Entrar */
+#login-btn {
+    background-color: #c053db; /* Roxo do tema */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    width: 100%;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#login-btn:hover {
+    background-color: #9c27b0; /* Roxo mais escuro no hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+#login-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#login-btn:disabled {
+    background-color: #7e57c2;
+    cursor: not-allowed;
+    opacity: 0.7;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Placeholders com tema roxo */
+input::placeholder,
+select::placeholder,
+textarea::placeholder {
+    color: #c053db; /* Roxo claro */
+    opacity: 0.7; /* Transparência */
+    font-style: italic;
+}
+
+/* Placeholder em foco */
+input:focus::placeholder,
+textarea:focus::placeholder {
+    color: #9c27b0; /* Roxo mais escuro */
+    opacity: 0.5;
+}

@@ -1,0 +1,643 @@
+/* Estilos Gerais */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1a0033;
+    color: #c053db;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Container Principal */
+#ficha-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+/* Estilo da Ficha */
+.ficha {
+    background-color: #330150;
+    border: 2px solid #c053db;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 0 20px rgba(192, 83, 219, 0.3);
+}
+
+/* Cabeçalho */
+.ficha h1 {
+    color: #c053db;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 28px;
+    border-bottom: 1px solid #c053db;
+    padding-bottom: 10px;
+}
+
+/* Atributos */
+.atributo {
+    margin-bottom: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.atributo label {
+    width: 180px;
+    color: #c053db;
+    font-weight: bold;
+    margin-right: 15px;
+}
+
+/* Campos de Texto e Número */
+.atributo input[type="text"],
+.atributo input[type="number"],
+.atributo textarea {
+    background-color: #1a0033;
+    color: #c053db;
+    border: 1px solid #c053db;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 16px;
+    flex-grow: 1;
+}
+
+.atributo input[type="number"] {
+    width: 60px;
+    text-align: center;
+}
+
+/* Textarea de História */
+.atributo textarea {
+    width: 100%;
+    min-height: 150px;
+    resize: vertical;
+    margin-top: 10px;
+}
+
+/* Botões */
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 15px 10px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#logout-btn {
+    background-color: #f44336;
+}
+
+#logout-btn:hover {
+    background-color: #d32f2f;
+}
+
+/* Layout dos Botões */
+#gerar-pdf, #logout-btn {
+    display: inline-block;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .atributo {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .atributo label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    .atributo input[type="text"],
+    .atributo input[type="number"] {
+        width: 100%;
+    }
+    
+    button {
+        width: 100%;
+        margin: 10px 0;
+    }
+}
+
+/* Efeitos Especiais */
+input:focus, textarea:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(192, 83, 219, 0.8);
+    border-color: #9c27b0;
+}
+
+/* Nome do Jogador Atual */
+#current-player {
+    color: #9c27b0;
+    font-style: italic;
+}
+
+/* Placeholders com tema roxo */
+input::placeholder,
+select::placeholder,
+textarea::placeholder {
+    color: #c053db;
+    opacity: 0.7;
+    font-style: italic;
+}
+
+/* Placeholder em foco */
+input:focus::placeholder,
+textarea:focus::placeholder {
+    color: #9c27b0;
+    opacity: 0.5;
+}
+
+/* Estilos para a seção de Habilidades */
+.habilidades-container {
+    margin-top: 30px;
+    border-top: 1px solid #c053db;
+    padding-top: 20px;
+}
+
+.habilidades-container h2 {
+    color: #c053db;
+    margin-bottom: 15px;
+}
+
+.habilidade-item {
+    background-color: #240138;
+    border: 1px solid #9c27b0;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    position: relative;
+    padding-bottom: 35px;
+}
+
+.habilidade-item:hover {
+    box-shadow: 0 0 10px rgba(156, 39, 176, 0.5);
+}
+
+.habilidade-item input[type="text"] {
+    width: 100%;
+    margin-bottom: 10px;
+    background-color: #1a0033;
+    color: #c053db;
+    border: 1px solid #c053db;
+}
+
+.habilidade-item textarea {
+    width: 100%;
+    min-height: 80px;
+    background-color: #1a0033;
+    color: #c053db;
+    border: 1px solid #c053db;
+}
+
+.remover-habilidade {
+    background-color: #1a0033;
+    color: #880000;
+    border: 1px solid #880000;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-top: 5px;
+    display: block;
+    width: fit-content;
+    transition: background-color 0.3s;
+}
+
+.remover-habilidade:hover {
+    border: 1px solid #880000;
+    color: #880000;
+    background-color: #28004d;
+}
+
+.controles-habilidades {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#adicionar-habilidade {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#adicionar-habilidade:hover {
+    background-color: #45a049;
+}
+
+/* Estilos para a seção de Perícias */
+.pericias-container {
+    margin-top: 30px;
+    border-top: 1px solid #c053db;
+    padding-top: 20px;
+}
+
+.pericias-container h2 {
+    color: #c053db;
+    margin-bottom: 15px;
+}
+
+.pericias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 10px;
+}
+
+.pericia-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 5px;
+    min-height: 40px;
+    transition: background-color 0.3s ease;
+}
+
+.pericia-item label {
+    color: #c053db;
+    font-weight: bold;
+    white-space: nowrap;
+    flex-shrink: 0;
+    width: 120px;
+    text-align: right;
+    margin-right: 10px;
+}
+
+.nivel-pericia {
+    appearance: none;
+    background-color: #1a0033;
+    color: #c053db;
+    border: 1px solid #c053db;
+    border-radius: 5px;
+    padding: 8px;
+    width: 180px;
+    transition: all 0.7s ease;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23c053db'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    padding-right: 30px;
+}
+
+/* Cores específicas para cada nível de perícia */
+.nivel-pericia[value="0"] { color: #c053db !important; } /* Não Treinado */
+.nivel-pericia[value="5"] { color: #4CAF50 !important; } /* Treinado */
+.nivel-pericia[value="10"] { color: #2196F3 !important; } /* Especializado */
+.nivel-pericia[value="15"] { color: #FFC107 !important; font-weight: bold !important; } /* Perito */
+
+/* Remove a cor padrão do dropdown quando aberto */
+.nivel-pericia:focus {
+    color: inherit !important;
+}
+
+/* Estilo para as opções do dropdown */
+.nivel-pericia option {
+    background-color: #330150;
+}
+
+/* Cores para as opções do dropdown */
+.nivel-pericia option[value="0"] { color: #c053db; }
+.nivel-pericia option[value="5"] { color: #4CAF50; }
+.nivel-pericia option[value="10"] { color: #2196F3; }
+.nivel-pericia option[value="15"] { color: #FFC107; font-weight: bold; }
+
+.nivel-pericia.dropdown-aberto {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23c053db'%3e%3cpath d='M7 15l5-5 5 5z'/%3e%3c/svg%3e");
+    background-color: #240138;
+}
+
+.nivel-pericia:focus {
+    border-color: #9c27b0;
+    box-shadow: 0 0 5px rgba(156, 39, 176, 0.5);
+    outline: none;
+}
+
+/* Estilos para a seção de Status */
+.status-container {
+    margin-top: 30px;
+    border-top: 1px solid #c053db;
+    padding-top: 20px;
+}
+
+.status-container h2 {
+    color: #c053db;
+    margin-bottom: 15px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.status-item label {
+    width: 100px;
+    color: #c053db;
+    font-weight: bold;
+    margin-right: 15px;
+}
+
+.status-bar-container {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    gap: 10px;
+}
+
+.status-bar {
+    flex-grow: 1;
+    height: 20px;
+    background-color: #1a0033;
+    border: 1px solid #c053db;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.status-fill {
+    height: 100%;
+    width: 100%;
+    background-color: #4CAF50;
+    border-radius: 8px;
+    transition: width 0.3s ease;
+}
+
+#vida-fill {
+    background: linear-gradient(90deg, #f44336, #ff9800);
+}
+
+#estamina-fill {
+    background: linear-gradient(90deg, #2196F3, #00bcd4);
+}
+
+.status-input {
+    width: 50px;
+    background-color: #1a0033;
+    color: #c053db;
+    border: 1px solid #c053db;
+    border-radius: 5px;
+    padding: 5px;
+    text-align: center;
+}
+
+.status-value {
+    color: #c053db;
+    min-width: 60px;
+    text-align: right;
+}
+
+/* Estilo do Escudo SVG */
+.defesa-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.escudo-svg-container {
+    width: 60px;
+    height: 72px;
+    position: relative;
+}
+
+.escudo-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.escudo-svg text {
+    transform: translateY(3px);
+}
+
+.escudo-fundo {
+    fill: #330150;
+    stroke: #c053db;
+    stroke-width: 2;
+}
+
+.defesa-foreign {
+    pointer-events: bounding-box;
+}
+
+.defesa-texto {
+    fill: white;
+    font-size: 24px;
+    font-weight: bold;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.defesa-input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    transition: opacity 0.2s;
+}
+
+.defesa-input::-webkit-outer-spin-button,
+.defesa-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.defesa-input:focus {
+    opacity: 1;
+    background: rgba(26, 0, 51, 0.7);
+}
+
+.defesa-container:not(:focus-within) .defesa-texto {
+    opacity: 1;
+}
+
+.escudo-svg-container:hover .escudo-fundo {
+    fill: #3a015c;
+    stroke: #d36bff;
+}
+
+.escudo-svg-container:active .escudo-fundo {
+    transform: scale(0.95);
+}
+
+@keyframes escudo-brilho {
+    0% { filter: drop-shadow(0 0 2px rgba(192, 83, 219, 0.7)); }
+    50% { filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.9)); }
+    100% { filter: drop-shadow(0 0 2px rgba(192, 83, 219, 0.7)); }
+}
+
+.escudo-svg.animar-brilho {
+    animation: escudo-brilho 0.5s ease;
+}
+
+/* Estilos para os inputs de máximo */
+.status-max-input {
+    width: 50px;
+    background-color: #1a0033;
+    color: #c053db;
+    border: 1px solid #c053db;
+    border-radius: 5px;
+    padding: 5px;
+    text-align: center;
+    margin-left: 5px;
+}
+
+.status-bar-container span {
+    color: #c053db;
+    margin: 0 5px;
+}
+
+/* Validação para não ultrapassar o máximo */
+.status-input:invalid {
+    border-color: #f44336;
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+/* Estilos para Resistências/Imunidades */
+.resistencia-container {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #c053db;
+    border-radius: 5px;
+    background-color: #240138;
+}
+
+.resistencia-container label {
+    display: block;
+    margin-bottom: 10px;
+    color: #c053db;
+    font-weight: bold;
+}
+
+.resistencia-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 10px;
+}
+
+.resistencia-item input[type="text"] {
+    flex-grow: 1;
+    background-color: #1a0033;
+    color: #c053db;
+    border: 1px solid #c053db;
+    border-radius: 5px;
+    padding: 8px;
+}
+
+.resistencia-item select {
+    background-color: #1a0033;
+    color: #c053db;
+    border: 1px solid #c053db;
+    border-radius: 5px;
+    padding: 8px;
+    width: 130px;
+}
+
+.btn-resistencia {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.btn-resistencia:hover {
+    background-color: #45a049;
+}
+
+.btn-remover-resistencia {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-remover-resistencia:hover {
+    background-color: #d32f2f;
+}
+
+/* Classe para transição de cor nas perícias */
+.nivel-pericia-color {
+    transition: color 0.3s ease;
+}
+
+
+/* Cores específicas para cada nível de perícia */
+.pericia-nao-treinado {
+    color: #c053db !important;
+}
+
+.pericia-treinado {
+    color: #4CAF50 !important;
+}
+
+.pericia-especializado {
+    color: #2196F3 !important;
+}
+
+.pericia-perito {
+    color: #FFC107 !important;
+    font-weight: bold !important;
+}
+
+/* Mantém a cor do texto quando em foco */
+.nivel-pericia:focus {
+    color: inherit !important;
+}
+
+/* Garante que as classes de cor tenham prioridade */
+.pericia-nao-treinado, 
+.pericia-nao-treinado:focus {
+    color: #c053db !important;
+}
+
+.pericia-treinado,
+.pericia-treinado:focus {
+    color: #4CAF50 !important;
+}
+
+.pericia-especializado,
+.pericia-especializado:focus {
+    color: #2196F3 !important;
+}
+
+.pericia-perito,
+.pericia-perito:focus {
+    color: #FFC107 !important;
+    font-weight: bold !important;
+}
