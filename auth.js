@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'jogador2': { name: 'Pedro', password: 'pedro123', locked: false },
         'jogador3': { name: 'Julia', password: 'julia123', locked: false },
         'jogador4': { name: 'Kaillan', password: 'kaillan123', locked: false },
-        'jogador5': { name: 'Miguel', password: 'teste123', locked: false }
+        'jogador5': { name: 'Miguel', password: 'miguel123', locked: false }
 
     };
 
