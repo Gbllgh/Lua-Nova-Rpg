@@ -200,12 +200,14 @@ textarea:focus::placeholder {
     background-color: #1a0033;
     color: #c053db;
     border: 1px solid #c053db;
+    resize: vertical;
+
 }
 
 .remover-habilidade {
     background-color: #1a0033;
-    color: #880000;
-    border: 1px solid #880000;
+    color: #e42c2c;
+    border: 1px solid #e42c2c;
     border-radius: 4px;
     padding: 5px 10px;
     font-size: 12px;
@@ -217,8 +219,8 @@ textarea:focus::placeholder {
 }
 
 .remover-habilidade:hover {
-    border: 1px solid #880000;
-    color: #880000;
+    border: 1px solid #e42c2c;
+    color: #e42c2c;
     background-color: #28004d;
 }
 
