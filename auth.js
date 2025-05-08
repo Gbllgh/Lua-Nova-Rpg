@@ -17,15 +17,29 @@ document.addEventListener('DOMContentLoaded', function() {
         lockTime: 0
     };
 
-    // Dados dos jogadores
+    // Dados dos jogadores (agora com senhas mais seguras)
     const players = {
-        'jogador1': { name: 'Bia', password: 'bia123', locked: false },
-        'jogador2': { name: 'Pedro', password: 'pedro123', locked: false },
-        'jogador3': { name: 'Julia', password: 'julia123', locked: false },
-        'jogador4': { name: 'Kaillan', password: 'kaillan123', locked: false },
-        'jogador5': { name: 'Miguel', password: 'miguel123', locked: false },
-        'jogador6': { name: 'Isabel', password: 'isabel123', locked: false }
+        'jogador1': { name: 'Bia', password: 'biaLN2023', locked: false },
+        'jogador2': { name: 'Pedro', password: 'pedroLN2023', locked: false },
+        'jogador3': { name: 'Julia', password: 'juliaLN2023', locked: false },
+        'jogador4': { name: 'Kaillan', password: 'kaillanLN2023', locked: false }
     };
+
+    // Inicialização do Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyAB64YDXBqkcFT0MTzUT9edjcwhuWVZvCU",
+        authDomain: "luanovarpg-90711.firebaseapp.com",
+        databaseURL: "https://luanovarpg-90711-default-rtdb.firebaseio.com/",
+        projectId: "luanovarpg-90711",
+        storageBucket: "luanovarpg-90711.firebasestorage.app",
+        messagingSenderId: "279486255638",
+        appId: "1:279486255638:web:db0aa20c079bf4406cdb37"
+    };
+    
+    // Verifica se o Firebase já foi inicializado
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
 
     // Mostrar/esconder senha
     togglePassword.addEventListener('click', function() {
@@ -66,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
         await new Promise(resolve => setTimeout(resolve, 800));
 
         if (password === players[playerId].password) {
-            loginSuccess(playerId);
+            await loginSuccess(playerId);
         } else {
             loginFailed(playerId);
         }
@@ -74,21 +88,40 @@ document.addEventListener('DOMContentLoaded', function() {
         stopLoading();
     }
 
-    function loginSuccess(playerId) {
+    async function loginSuccess(playerId) {
         securityState.attempts = 3;
         updateAttemptsDisplay();
         showMessage('Login bem-sucedido! Redirecionando...', 'success');
         
-        // Armazena o jogador logado na sessionStorage
-        sessionStorage.setItem('loggedPlayer', JSON.stringify({
-            id: playerId,
-            name: players[playerId].name
-        }));
-        
-        // Redireciona para a página da ficha após 1 segundo
-        setTimeout(() => {
-            window.location.href = 'ficha.html';
-        }, 1000);
+        // Autenticação no Firebase (anônima - você pode mudar para autenticação com e-mail depois)
+        try {
+            await firebase.auth().signInAnonymously();
+            console.log("Autenticado no Firebase com ID:", firebase.auth().currentUser.uid);
+            
+            // Armazena o jogador logado
+            sessionStorage.setItem('loggedPlayer', JSON.stringify({
+                id: playerId,
+                name: players[playerId].name,
+                firebaseUID: firebase.auth().currentUser.uid // Guarda o UID do Firebase
+            }));
+            
+            // Redireciona para a página da ficha após 1 segundo
+            setTimeout(() => {
+                window.location.href = 'ficha.html';
+            }, 1000);
+            
+        } catch (firebaseError) {
+            console.error("Erro no Firebase Auth:", firebaseError);
+            // Fallback - armazena sem o Firebase se houver erro
+            sessionStorage.setItem('loggedPlayer', JSON.stringify({
+                id: playerId,
+                name: players[playerId].name
+            }));
+            
+            setTimeout(() => {
+                window.location.href = 'ficha.html';
+            }, 1000);
+        }
     }
 
     function loginFailed(playerId) {
@@ -119,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function lockSystem() {
         securityState.locked = true;
-        securityState.lockTime = 1800; // 30 segundos
+        securityState.lockTime = 30; // 30 segundos
         
         const timer = setInterval(() => {
             securityState.lockTime--;
@@ -156,14 +189,15 @@ document.addEventListener('DOMContentLoaded', function() {
     function startLoading() {
         loginBtn.disabled = true;
         loginText.textContent = 'Autenticando...';
-        loginSpinner.classList.add('active'); // Adiciona classe active
+        loginSpinner.classList.add('active');
     }
 
     function stopLoading() {
         loginBtn.disabled = false;
         loginText.textContent = 'Entrar';
-        loginSpinner.classList.remove('active'); // Remove classe active
+        loginSpinner.classList.remove('active');
     }
+
     // Event listeners
     loginBtn.addEventListener('click', fazerLogin);
     passwordInput.addEventListener('keypress', function(e) {
@@ -171,10 +205,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Inicialização
-    
     updateAttemptsDisplay();
-    // Inicialização - garanta que o spinner comece oculto
-window.addEventListener('DOMContentLoaded', function() {
     loginSpinner.classList.remove('active');
-});
 });
