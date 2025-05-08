@@ -17,14 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
         lockTime: 0
     };
 
-    // Dados dos jogadores
-    const players = {
-        'jogador1': { name: 'Bia', password: 'biaLN2023', locked: false },
-        'jogador2': { name: 'Pedro', password: 'pedroLN2023', locked: false },
-        'jogador3': { name: 'Julia', password: 'juliaLN2023', locked: false },
-        'jogador4': { name: 'Kaillan', password: 'kaillanLN2023', locked: false }
-    };
-
     // Configuração do Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyAB64YDXBqkcFT0MTzUT9edjcwhuWVZvCU",
@@ -40,6 +32,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
     }
+    const auth = firebase.auth();
+
+    // Dados dos jogadores (substitua pelas senhas reais)
+    const players = {
+        'jogador1': { name: 'Bia', password: 'bia123', locked: false },
+        'jogador2': { name: 'Pedro', password: 'pedro123', locked: false },
+        'jogador3': { name: 'Julia', password: 'julia123', locked: false },
+        'jogador4': { name: 'Kaillan', password: 'kaillan123', locked: false }
+    };
 
     // Mostrar/esconder senha
     togglePassword.addEventListener('click', function() {
@@ -49,12 +50,12 @@ document.addEventListener('DOMContentLoaded', function() {
         this.classList.toggle('fa-eye-slash');
     });
 
-    // Focar na senha ao selecionar jogador
+    // Foco automático na senha
     playerSelect.addEventListener('change', function() {
         if (this.value) passwordInput.focus();
     });
 
-    // Sistema de login
+    // Sistema de login principal
     async function fazerLogin() {
         if (securityState.locked) {
             showMessage(`Aguarde ${securityState.lockTime} segundos antes de tentar novamente`, 'error');
@@ -88,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         stopLoading();
     }
 
+    // Login bem-sucedido
     async function loginSuccess(playerId) {
         securityState.attempts = 3;
         updateAttemptsDisplay();
@@ -95,33 +97,113 @@ document.addEventListener('DOMContentLoaded', function() {
         
         try {
             // Autenticação anônima no Firebase
-            await firebase.auth().signInAnonymously();
+            const userCredential = await auth.signInAnonymously();
+            const firebaseUID = userCredential.user.uid;
             
             // Armazena dados do jogador
             sessionStorage.setItem('loggedPlayer', JSON.stringify({
                 id: playerId,
                 name: players[playerId].name,
-                firebaseUID: firebase.auth().currentUser.uid
+                firebaseUID: firebaseUID
             }));
             
+            // Redirecionamento
             setTimeout(() => {
                 window.location.href = 'ficha.html';
             }, 1000);
             
-        } catch (error) {
-            console.error("Erro no Firebase Auth:", error);
+        } catch (firebaseError) {
+            console.error("Erro no Firebase Auth:", firebaseError);
             // Fallback sem Firebase
             sessionStorage.setItem('loggedPlayer', JSON.stringify({
                 id: playerId,
                 name: players[playerId].name
             }));
+            
             setTimeout(() => {
                 window.location.href = 'ficha.html';
             }, 1000);
         }
     }
 
-    // ... (mantenha as outras funções como loginFailed, lockAccount, etc. iguais ao código anterior)
+    // Login falhou
+    function loginFailed(playerId) {
+        securityState.attempts--;
+        updateAttemptsDisplay();
+
+        if (securityState.attempts <= 0) {
+            lockAccount(playerId);
+            lockSystem();
+        } else {
+            showMessage(`Senha incorreta! Tentativas restantes: ${securityState.attempts}`, 'error');
+            passwordInput.value = '';
+            passwordInput.focus();
+        }
+    }
+
+    // Bloqueia conta após muitas tentativas
+    function lockAccount(playerId) {
+        players[playerId].locked = true;
+        showMessage('Conta bloqueada temporariamente por muitas tentativas falhas', 'error');
+        
+        setTimeout(() => {
+            players[playerId].locked = false;
+            if (playerSelect.value === playerId) {
+                showMessage('Sua conta foi desbloqueada. Tente novamente.', 'success');
+            }
+        }, 5 * 60 * 1000); // 5 minutos
+    }
+
+    // Bloqueia o sistema temporariamente
+    function lockSystem() {
+        securityState.locked = true;
+        securityState.lockTime = 30; // 30 segundos
+        
+        const timer = setInterval(() => {
+            securityState.lockTime--;
+            if (securityState.lockTime <= 0) {
+                clearInterval(timer);
+                securityState.locked = false;
+                securityState.attempts = 3;
+                updateAttemptsDisplay();
+                showMessage('Você pode tentar fazer login novamente', 'success');
+            } else {
+                showMessage(`Aguarde ${securityState.lockTime} segundos antes de tentar novamente`, 'error');
+            }
+        }, 1000);
+    }
+
+    // Atualiza a exibição de tentativas
+    function updateAttemptsDisplay() {
+        attemptsCounter.textContent = securityState.attempts;
+        loginAttempts.classList.toggle('hidden', securityState.attempts >= 3);
+    }
+
+    // Exibe mensagens temporárias
+    function showMessage(text, type) {
+        loginMessage.textContent = text;
+        loginMessage.className = 'message ' + (type || '');
+        loginMessage.style.display = 'block';
+        
+        if (type !== 'error' || !text.includes('Aguarde')) {
+            setTimeout(() => {
+                loginMessage.style.display = 'none';
+            }, 5000);
+        }
+    }
+
+    // Animação de loading
+    function startLoading() {
+        loginBtn.disabled = true;
+        loginText.textContent = 'Autenticando...';
+        loginSpinner.classList.add('active');
+    }
+
+    function stopLoading() {
+        loginBtn.disabled = false;
+        loginText.textContent = 'Entrar';
+        loginSpinner.classList.remove('active');
+    }
 
     // Event listeners
     loginBtn.addEventListener('click', fazerLogin);
