@@ -39,7 +39,9 @@ document.addEventListener('DOMContentLoaded', function() {
         'jogador1': { name: 'Bia', password: 'bia123', locked: false },
         'jogador2': { name: 'Pedro', password: 'pedro123', locked: false },
         'jogador3': { name: 'Julia', password: 'julia123', locked: false },
-        'jogador4': { name: 'Kaillan', password: 'kaillan123', locked: false }
+        'jogador4': { name: 'Kaillan', password: 'kaillan123', locked: false },
+        'jogador5': { name: 'Teste', password: 'teste123', locked: false }
+
     };
 
     // Mostrar/esconder senha
