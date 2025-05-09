@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const adicionarHabilidadeBtn = document.getElementById('adicionar-habilidade');
     const adicionarResistenciaBtn = document.getElementById('adicionar-resistencia');
     const gerarPdfBtn = document.getElementById('gerar-pdf');
+    const adicionarItemBtn = document.getElementById('adicionar-item');
 
     // Configuração do Firebase
     const firebaseConfig = {
@@ -41,12 +42,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Carrega a ficha do Firebase/localStorage
     async function carregarFicha(playerId) {
         try {
-            // Tenta carregar do Firebase
             const snapshot = await database.ref('fichas/' + playerId).once('value');
             const fichaRemota = snapshot.val();
             
             if (fichaRemota) {
-                console.log("Carregando do Firebase");
                 preencherFicha(fichaRemota);
                 return;
             }
@@ -54,17 +53,13 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error("Erro ao carregar do Firebase:", error);
         }
 
-        // Fallback: carrega do localStorage
         const fichaLocal = localStorage.getItem(`ficha_${playerId}`);
         if (fichaLocal) {
-            console.log("Carregando do localStorage");
             preencherFicha(JSON.parse(fichaLocal));
-            
-            // Tenta sincronizar com Firebase
             salvarFichaNoFirebase(playerId, JSON.parse(fichaLocal));
         } else {
-            // Ficha nova
             adicionarHabilidade();
+            adicionarItem();
         }
     }
 
@@ -89,10 +84,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Habilidades
         habilidadesLista.innerHTML = "";
-        if (dados.habilidades && dados.habilidades.length > 0) {
-            dados.habilidades.forEach(habilidade => {
-                adicionarHabilidade(habilidade.nome, habilidade.descricao);
-            });
+        if (dados.habilidades?.length > 0) {
+            dados.habilidades.forEach(h => adicionarHabilidade(h.nome, h.descricao));
         } else {
             adicionarHabilidade();
         }
@@ -100,8 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Perícias
         if (dados.pericias) {
             document.querySelectorAll('.nivel-pericia').forEach(select => {
-                const periciaItem = select.closest('.pericia-item');
-                const nomePericia = periciaItem.querySelector('label').textContent.replace(':', '').trim();
+                const nomePericia = select.closest('.pericia-item').querySelector('label').textContent.replace(':', '').trim();
                 if (dados.pericias[nomePericia]) {
                     select.value = dados.pericias[nomePericia];
                     updatePericiaColor(select);
@@ -112,10 +104,17 @@ document.addEventListener('DOMContentLoaded', function() {
         // Resistências
         const resistenciaLista = document.getElementById('resistencia-lista');
         resistenciaLista.innerHTML = "";
-        if (dados.resistencias && dados.resistencias.length > 0) {
-            dados.resistencias.forEach(res => {
-                adicionarResistencia(res.tipo, res.descricao);
-            });
+        if (dados.resistencias?.length > 0) {
+            dados.resistencias.forEach(r => adicionarResistencia(r.tipo, r.descricao));
+        }
+
+        // Inventário
+        const itensLista = document.getElementById('itens-lista');
+        itensLista.innerHTML = "";
+        if (dados.itens?.length > 0) {
+            dados.itens.forEach(i => adicionarItem(i.nome, i.quantidade, i.descricao));
+        } else {
+            adicionarItem();
         }
 
         updateStatusBars();
@@ -125,7 +124,6 @@ document.addEventListener('DOMContentLoaded', function() {
     async function salvarFichaNoFirebase(playerId, dados) {
         try {
             await database.ref('fichas/' + playerId).set(dados);
-            console.log("Salvo no Firebase");
             showTempMessage("Dados sincronizados!", "success");
             return true;
         } catch (error) {
@@ -136,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Salva a ficha (local + Firebase)
-    async function salvarFicha(playerId) {
+    function salvarFicha(playerId) {
         const dados = {
             nome: document.getElementById('nome-personagem').value,
             chale: document.getElementById('chale').value,
@@ -154,14 +152,12 @@ document.addEventListener('DOMContentLoaded', function() {
             habilidades: coletarHabilidades(),
             pericias: coletarPericias(),
             resistencias: coletarResistencias(),
+            itens: coletarItens(),
             ultimaAtualizacao: firebase.database.ServerValue.TIMESTAMP
         };
 
-        // Salva localmente
         localStorage.setItem(`ficha_${playerId}`, JSON.stringify(dados));
-        
-        // Tenta salvar no Firebase
-        await salvarFichaNoFirebase(playerId, dados);
+        salvarFichaNoFirebase(playerId, dados);
     }
 
     // ---------- FUNÇÕES AUXILIARES ----------
@@ -170,66 +166,62 @@ document.addEventListener('DOMContentLoaded', function() {
     function setupRealtimeUpdates(playerId) {
         database.ref('fichas/' + playerId).on('value', (snapshot) => {
             const dados = snapshot.val();
-            if (dados) {
-                console.log("Atualização em tempo real recebida");
-                preencherFicha(dados);
-                showTempMessage("Ficha atualizada!", "info");
-            }
+            if (dados) preencherFicha(dados);
         });
     }
 
     // Coleta dados das habilidades
     function coletarHabilidades() {
-        const habilidades = [];
-        document.querySelectorAll('.habilidade-item').forEach(item => {
-            habilidades.push({
-                nome: item.querySelector('.habilidade-nome').value,
-                descricao: item.querySelector('.habilidade-descricao').value
-            });
-        });
-        return habilidades;
+        return Array.from(document.querySelectorAll('.habilidade-item')).map(item => ({
+            nome: item.querySelector('.habilidade-nome').value,
+            descricao: item.querySelector('.habilidade-descricao').value
+        }));
     }
 
     // Coleta dados das perícias
     function coletarPericias() {
         const pericias = {};
         document.querySelectorAll('.pericia-item').forEach(item => {
-            const nomePericia = item.querySelector('label').textContent.replace(':', '').trim();
-            const nivelPericia = item.querySelector('.nivel-pericia').value;
-            pericias[nomePericia] = nivelPericia;
+            const nome = item.querySelector('label').textContent.replace(':', '').trim();
+            pericias[nome] = item.querySelector('.nivel-pericia').value;
         });
         return pericias;
     }
 
     // Coleta dados das resistências
     function coletarResistencias() {
-        const resistencias = [];
-        document.querySelectorAll('.resistencia-item').forEach(item => {
-            resistencias.push({
-                tipo: item.querySelector('.tipo-resistencia').value,
-                descricao: item.querySelector('.descricao-resistencia').value
-            });
-        });
-        return resistencias;
+        return Array.from(document.querySelectorAll('.resistencia-item')).map(item => ({
+            tipo: item.querySelector('.tipo-resistencia').value,
+            descricao: item.querySelector('.descricao-resistencia').value
+        }));
+    }
+
+    // Coleta dados dos itens
+    function coletarItens() {
+        return Array.from(document.querySelectorAll('.item-inventario')).map(item => ({
+            nome: item.querySelector('.item-nome').value,
+            quantidade: parseInt(item.querySelector('.item-quantidade').value) || 1,
+            descricao: item.querySelector('.item-descricao').value
+        }));
     }
 
     // Adiciona nova habilidade
     function adicionarHabilidade(nome = '', descricao = '') {
-        const habilidadeItem = document.createElement('div');
-        habilidadeItem.className = 'habilidade-item';
-        habilidadeItem.innerHTML = `
+        const div = document.createElement('div');
+        div.className = 'habilidade-item';
+        div.innerHTML = `
             <input type="text" class="habilidade-nome" placeholder="Nome da Habilidade" value="${nome}">
             <textarea class="habilidade-descricao" placeholder="Descrição...">${descricao}</textarea>
             <button class="remover-habilidade">Remover</button>
         `;
-        habilidadesLista.appendChild(habilidadeItem);
-
-        // Event listeners
-        habilidadeItem.querySelector('.habilidade-nome').addEventListener('input', () => salvarFicha(loggedPlayer.id));
-        habilidadeItem.querySelector('.habilidade-descricao').addEventListener('input', () => salvarFicha(loggedPlayer.id));
-        habilidadeItem.querySelector('.remover-habilidade').addEventListener('click', function() {
+        habilidadesLista.appendChild(div);
+        
+        // Adiciona listeners para os novos campos
+        setupInputListeners(div);
+        
+        div.querySelector('.remover-habilidade').addEventListener('click', () => {
             if (confirm('Remover esta habilidade?')) {
-                habilidadeItem.remove();
+                div.remove();
                 salvarFicha(loggedPlayer.id);
             }
         });
@@ -237,9 +229,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Adiciona nova resistência
     function adicionarResistencia(tipo = 'resistencia', descricao = '') {
-        const resistenciaItem = document.createElement('div');
-        resistenciaItem.className = 'resistencia-item';
-        resistenciaItem.innerHTML = `
+        const div = document.createElement('div');
+        div.className = 'resistencia-item';
+        div.innerHTML = `
             <select class="tipo-resistencia">
                 <option value="resistencia" ${tipo === 'resistencia' ? 'selected' : ''}>Resistência</option>
                 <option value="imunidade" ${tipo === 'imunidade' ? 'selected' : ''}>Imunidade</option>
@@ -248,135 +240,160 @@ document.addEventListener('DOMContentLoaded', function() {
             <input type="text" class="descricao-resistencia" placeholder="Ex: Fogo, Veneno" value="${descricao}">
             <button class="btn-remover-resistencia">Remover</button>
         `;
-        document.getElementById('resistencia-lista').appendChild(resistenciaItem);
-
-        // Event listeners
-        resistenciaItem.querySelector('.tipo-resistencia').addEventListener('change', () => salvarFicha(loggedPlayer.id));
-        resistenciaItem.querySelector('.descricao-resistencia').addEventListener('input', () => salvarFicha(loggedPlayer.id));
-        resistenciaItem.querySelector('.btn-remover-resistencia').addEventListener('click', function() {
+        document.getElementById('resistencia-lista').appendChild(div);
+        
+        // Adiciona listeners para os novos campos
+        setupInputListeners(div);
+        
+        div.querySelector('.btn-remover-resistencia').addEventListener('click', () => {
             if (confirm('Remover esta resistência?')) {
-                resistenciaItem.remove();
+                div.remove();
                 salvarFicha(loggedPlayer.id);
             }
         });
     }
 
-    // Atualiza cores das perícias
-    function updatePericiaColor(selectElement) {
-        selectElement.classList.remove(
-            'pericia-nao-treinado', 'pericia-treinado', 
-            'pericia-especializado', 'pericia-perito'
-        );
+    // Adiciona novo item
+    function adicionarItem(nome = '', quantidade = 1, descricao = '') {
+        const div = document.createElement('div');
+        div.className = 'item-inventario';
+        div.innerHTML = `
+            <input type="text" class="item-nome" placeholder="Nome do item" value="${nome}">
+            <input type="number" class="item-quantidade" min="1" value="${quantidade}">
+            <textarea class="item-descricao" placeholder="Descrição...">${descricao}</textarea>
+            <button class="btn-remover-item">Remover</button>
+        `;
+        document.getElementById('itens-lista').appendChild(div);
         
-        switch(selectElement.value) {
-            case '0': selectElement.classList.add('pericia-nao-treinado'); break;
-            case '5': selectElement.classList.add('pericia-treinado'); break;
-            case '10': selectElement.classList.add('pericia-especializado'); break;
-            case '15': selectElement.classList.add('pericia-perito'); break;
-        }
-    }
-
-    // Atualiza barras de status
-    function updateStatusBars() {
-        // Vida
-        const vida = parseInt(document.getElementById('vida').value) || 0;
-        const vidaMax = parseInt(document.getElementById('vida-max').value) || 1;
-        const vidaPercent = Math.min(100, (vida / vidaMax) * 100);
-        document.getElementById('vida-fill').style.width = `${vidaPercent}%`;
+        // Adiciona listeners para os novos campos
+        setupInputListeners(div);
         
-        // Estamina
-        const estamina = parseInt(document.getElementById('estamina').value) || 0;
-        const estaminaMax = parseInt(document.getElementById('estamina-max').value) || 1;
-        const estaminaPercent = Math.min(100, (estamina / estaminaMax) * 100);
-        document.getElementById('estamina-fill').style.width = `${estaminaPercent}%`;
-    }
-
-    // Configura barras de status
-    function setupStatusBars() {
-        const vidaInput = document.getElementById('vida');
-        const vidaMaxInput = document.getElementById('vida-max');
-        const estaminaInput = document.getElementById('estamina');
-        const estaminaMaxInput = document.getElementById('estamina-max');
-
-        [vidaInput, vidaMaxInput, estaminaInput, estaminaMaxInput].forEach(input => {
-            input.addEventListener('input', () => {
-                updateStatusBars();
+        div.querySelector('.btn-remover-item').addEventListener('click', () => {
+            if (confirm('Remover este item?')) {
+                div.remove();
                 salvarFicha(loggedPlayer.id);
+            }
+        });
+    }
+
+    // Configura listeners para campos de input
+    function setupInputListeners(container) {
+        let saveTimeout;
+        
+        container.querySelectorAll('input, textarea, select').forEach(input => {
+            input.addEventListener('input', () => {
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(() => {
+                    salvarFicha(loggedPlayer.id);
+                    if (input.classList.contains('nivel-pericia')) {
+                        updatePericiaColor(input);
+                    }
+                }, 500);
             });
         });
     }
 
-    // Configura defesa
-    function setupDefesa() {
-        const defesaInput = document.getElementById('defesa-input');
-        const escudoSvg = document.querySelector('.escudo-svg');
-        
-        defesaInput.addEventListener('input', function() {
-            escudoSvg.classList.remove('animar-brilho');
-            void escudoSvg.offsetWidth;
-            escudoSvg.classList.add('animar-brilho');
-            salvarFicha(loggedPlayer.id);
-        });
+    // Atualiza cores das perícias
+    function updatePericiaColor(select) {
+        select.className = 'nivel-pericia ' + 
+            ['pericia-nao-treinado', 'pericia-treinado', 'pericia-especializado', 'pericia-perito']
+            [['0', '5', '10', '15'].indexOf(select.value)];
+    }
+
+    // Atualiza barras de status
+    function updateStatusBars() {
+        function updateBar(currentId, maxId, fillId) {
+            const current = parseInt(document.getElementById(currentId).value) || 0;
+            const max = parseInt(document.getElementById(maxId).value) || 1;
+            document.getElementById(fillId).style.width = `${Math.min(100, (current / max) * 100)}%`;
+        }
+        updateBar('vida', 'vida-max', 'vida-fill');
+        updateBar('estamina', 'estamina-max', 'estamina-fill');
     }
 
     // Mostra mensagem temporária
     function showTempMessage(text, type) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `temp-message ${type}`;
-        messageDiv.textContent = text;
-        document.body.appendChild(messageDiv);
+        const div = document.createElement('div');
+        div.className = `temp-message ${type}`;
+        div.textContent = text;
+        document.body.appendChild(div);
+        setTimeout(() => div.classList.add('fade-out'), 2500);
+        setTimeout(() => div.remove(), 3000);
+    }
+
+    // Configura listeners para campos estáticos
+    function setupStaticListeners() {
+        let saveTimeout;
         
-        setTimeout(() => {
-            messageDiv.classList.add('fade-out');
-            setTimeout(() => messageDiv.remove(), 500);
-        }, 3000);
+        document.querySelectorAll('#ficha-rpg input, #ficha-rpg textarea, #ficha-rpg select').forEach(input => {
+            if (!input.closest('.habilidade-item') && 
+                !input.closest('.resistencia-item') && 
+                !input.closest('.item-inventario')) {
+                
+                input.addEventListener('input', () => {
+                    clearTimeout(saveTimeout);
+                    saveTimeout = setTimeout(() => {
+                        salvarFicha(loggedPlayer.id);
+                        if (input.classList.contains('nivel-pericia')) {
+                            updatePericiaColor(input);
+                        }
+                    }, 500);
+                });
+            }
+        });
     }
 
     // ---------- EVENT LISTENERS ----------
 
-    // Logout
-    logoutBtn.addEventListener('click', function() {
+    logoutBtn.addEventListener('click', () => {
         auth.signOut().then(() => {
             sessionStorage.removeItem('loggedPlayer');
             window.location.href = 'index.html';
         });
     });
 
-    // Gerar PDF
-    gerarPdfBtn.addEventListener('click', function() {
+    gerarPdfBtn.addEventListener('click', () => {
         const nome = document.getElementById('nome-personagem').value || "Sem Nome";
-        const options = {
+        const elementsToHide = document.querySelectorAll('#logout-btn, #gerar-pdf');
+        elementsToHide.forEach(el => el.style.display = 'none');
+        
+        html2pdf().set({
             margin: 10,
             filename: `ficha_${nome}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
+            html2canvas: { 
+                scale: 2,
+                windowWidth: document.getElementById('ficha-rpg').scrollWidth
+            },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-        html2pdf().set(options).from(document.getElementById('ficha-rpg')).save();
+        }).from(document.getElementById('ficha-rpg')).toPdf().get('pdf').then(() => {
+            elementsToHide.forEach(el => el.style.display = '');
+        }).save();
     });
 
-    // Adicionar habilidade
     adicionarHabilidadeBtn.addEventListener('click', () => adicionarHabilidade());
-
-    // Adicionar resistência
     adicionarResistenciaBtn.addEventListener('click', () => adicionarResistencia());
+    adicionarItemBtn.addEventListener('click', () => adicionarItem());
 
     // ---------- INICIALIZAÇÃO ----------
     carregarFicha(loggedPlayer.id);
-    setupStatusBars();
-    setupDefesa();
+    setupStaticListeners();
     setupRealtimeUpdates(loggedPlayer.id);
     
-    // Configura listeners para auto-salvar
-    document.querySelectorAll('input, textarea, select').forEach(element => {
-        if (!element.classList.contains('habilidade-nome') && 
-            !element.classList.contains('habilidade-descricao') &&
-            !element.classList.contains('descricao-resistencia')) {
-            element.addEventListener('input', () => salvarFicha(loggedPlayer.id));
-        }
+    // Configura listeners para status
+    ['vida', 'vida-max', 'estamina', 'estamina-max'].forEach(id => {
+        document.getElementById(id).addEventListener('input', updateStatusBars);
     });
 
-    // Adiciona CSS para mensagens temporárias
+    // Configura animação do escudo
+    document.getElementById('defesa-input').addEventListener('input', () => {
+        const escudo = document.querySelector('.escudo-svg');
+        escudo.classList.remove('animar-brilho');
+        void escudo.offsetWidth;
+        escudo.classList.add('animar-brilho');
+    });
+
+    // Adiciona CSS
     const style = document.createElement('style');
     style.textContent = `
         .temp-message {
@@ -389,7 +406,6 @@ document.addEventListener('DOMContentLoaded', function() {
             z-index: 1000;
             opacity: 1;
             transition: opacity 0.5s;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .temp-message.success { background-color: #4CAF50; }
         .temp-message.warning { background-color: #FF9800; }

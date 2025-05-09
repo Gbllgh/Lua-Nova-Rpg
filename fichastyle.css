@@ -643,3 +643,86 @@ textarea:focus::placeholder {
     color: #FFC107 !important;
     font-weight: bold !important;
 }
+
+/* Estilos para a seção de Inventário */
+.inventario-container {
+    margin-top: 30px;
+    border-top: 1px solid #c053db;
+    padding-top: 20px;
+}
+
+.inventario-container h2 {
+    color: #c053db;
+    margin-bottom: 15px;
+}
+
+.item-inventario {
+    display: grid;
+    grid-template-columns: 1fr 80px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #240138;
+    border: 1px solid #9c27b0;
+    border-radius: 5px;
+}
+
+.item-inventario input[type="text"],
+.item-inventario textarea {
+    background-color: #1a0033;
+    color: #c053db;
+    border: 1px solid #c053db;
+    border-radius: 5px;
+    padding: 8px;
+    width: 100%;
+}
+
+.item-inventario input[type="number"] {
+    background-color: #1a0033;
+    color: #c053db;
+    border: 1px solid #c053db;
+    border-radius: 5px;
+    padding: 8px;
+    text-align: center;
+}
+
+.item-inventario textarea {
+    min-height: 60px;
+    resize: vertical;
+}
+
+.btn-remover-item {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-remover-item:hover {
+    background-color: #d32f2f;
+}
+
+.btn-inventario {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.btn-inventario:hover {
+    background-color: #45a049;
+}
+
+@media (max-width: 768px) {
+    .item-inventario {
+        grid-template-columns: 1fr;
+    }
+}
