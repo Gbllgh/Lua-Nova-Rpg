@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const adicionarResistenciaBtn = document.getElementById('adicionar-resistencia');
     const gerarPdfBtn = document.getElementById('gerar-pdf');
     const adicionarItemBtn = document.getElementById('adicionar-item');
+    const armasLista = document.getElementById('armas-lista');
+    const adicionarArmaBtn = document.getElementById('adicionar-arma');
 
     // Configuração do Firebase
     const firebaseConfig = {
@@ -117,7 +119,17 @@ document.addEventListener('DOMContentLoaded', function() {
             adicionarItem();
         }
 
-        updateStatusBars();
+       // Armas
+       const armasLista = document.getElementById('armas-lista');
+       armasLista.innerHTML = "";
+       if (dados.armas?.length > 0) {
+           dados.armas.forEach(a => adicionarArma(a.nome, a.dadoAcerto, a.dano, a.descricao));
+       } else {
+           adicionarArma();
+       }
+
+       updateStatusBars();
+   
     }
 
     // Salva a ficha no Firebase
@@ -153,6 +165,8 @@ document.addEventListener('DOMContentLoaded', function() {
             pericias: coletarPericias(),
             resistencias: coletarResistencias(),
             itens: coletarItens(),
+            armas: coletarArmas(),
+
             ultimaAtualizacao: firebase.database.ServerValue.TIMESTAMP
         };
 
@@ -202,6 +216,15 @@ document.addEventListener('DOMContentLoaded', function() {
             nome: item.querySelector('.item-nome').value,
             quantidade: parseInt(item.querySelector('.item-quantidade').value) || 1,
             descricao: item.querySelector('.item-descricao').value
+        }));
+    }
+
+     function coletarArmas() {
+        return Array.from(document.querySelectorAll('.arma-item')).map(arma => ({
+            nome: arma.querySelector('.arma-nome').value,
+            dadoAcerto: arma.querySelector('.arma-dado-acerto').value,
+            dano: arma.querySelector('.arma-dano').value,
+            descricao: arma.querySelector('.arma-descricao').value
         }));
     }
 
@@ -275,6 +298,30 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+        // Adicione esta nova função para adicionar armas
+        function adicionarArma(nome = '', dadoAcerto = '', dano = '', descricao = '') {
+            const div = document.createElement('div');
+            div.className = 'arma-item';
+            div.innerHTML = `
+                <input type="text" class="arma-nome" placeholder="Nome da arma" value="${nome}">
+                <input type="text" class="arma-dado-acerto" placeholder="Dado de acerto (ex: 2d20)" value="${dadoAcerto}">
+                <input type="text" class="arma-dano" placeholder="Dano (ex: 4d4)" value="${dano}">
+                <textarea class="arma-descricao" placeholder="Descrição...">${descricao}</textarea>
+                <button class="btn-remover-arma">Remover</button>
+            `;
+            armasLista.appendChild(div);
+            
+            // Adiciona listeners para os novos campos
+            setupInputListeners(div);
+            
+            div.querySelector('.btn-remover-arma').addEventListener('click', () => {
+                if (confirm('Remover esta arma?')) {
+                    div.remove();
+                    salvarFicha(loggedPlayer.id);
+                }
+            });
+        }
 
     // Configura listeners para campos de input
     function setupInputListeners(container) {
@@ -374,6 +421,8 @@ document.addEventListener('DOMContentLoaded', function() {
     adicionarHabilidadeBtn.addEventListener('click', () => adicionarHabilidade());
     adicionarResistenciaBtn.addEventListener('click', () => adicionarResistencia());
     adicionarItemBtn.addEventListener('click', () => adicionarItem());
+    adicionarArmaBtn.addEventListener('click', () => adicionarArma());
+
 
     // ---------- INICIALIZAÇÃO ----------
     carregarFicha(loggedPlayer.id);
