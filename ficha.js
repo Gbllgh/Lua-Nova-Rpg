@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
             adicionarArma();
         }
 
-        // Magias
+        // Magias (versão simplificada sem toggle)
         const magiasLista = document.getElementById('magias-lista');
         magiasLista.innerHTML = "";
         if (dados.magias?.length > 0) {
@@ -247,20 +247,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }));
     }
 
-    // Coleta dados das magias (atualizada)
+    // Coleta dados das magias (simplificado)
     function coletarMagias() {
-        return Array.from(document.querySelectorAll('.magia-item')).map(magia => {
-            const detalhes = magia.querySelector('.magia-detalhes');
-            return {
-                nome: detalhes.querySelector('.magia-nome').value,
-                nivel: detalhes.querySelector('.magia-nivel').value,
-                dadoAcerto: detalhes.querySelector('.magia-dado-acerto').value,
-                dano: detalhes.querySelector('.magia-dano').value,
-                estamina: detalhes.querySelector('.magia-estamina').value,
-                descricao: detalhes.querySelector('.magia-descricao').value,
-                imagemURL: magia.querySelector('.magia-imagem').src
-            };
-        });
+        return Array.from(document.querySelectorAll('.magia-item')).map(magia => ({
+            nome: magia.querySelector('.magia-nome').value,
+            nivel: magia.querySelector('.magia-nivel').value,
+            dadoAcerto: magia.querySelector('.magia-dado-acerto').value,
+            dano: magia.querySelector('.magia-dano').value,
+            estamina: magia.querySelector('.magia-estamina').value,
+            descricao: magia.querySelector('.magia-descricao').value,
+            imagemURL: magia.querySelector('.magia-imagem').src
+        }));
     }
 
     // Adiciona nova habilidade
@@ -356,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Adiciona nova magia (atualizada)
+    // Adiciona nova magia (versão definitiva sem toggle)
     function adicionarMagia(
         nome = '', 
         nivel = '', 
@@ -369,112 +366,66 @@ document.addEventListener('DOMContentLoaded', function() {
         const div = document.createElement('div');
         div.className = 'magia-item';
         div.innerHTML = `
-            <div class="magia-cabecalho">
-                <div class="magia-imagem-container">
-                    <img class="magia-imagem" src="${imagemURL || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjYzA1M2RiIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptLTEgMTVoMnYyaC0ydi0yem0wLTEzaDJ2MTBoLTJWNnoiLz48L3N2Zz4='}" alt="Ícone de magia">
-                    <label class="magia-upload-label" title="Alterar imagem">
-                        <i class="fas fa-camera"></i>
-                        <input type="file" class="magia-upload" accept="image/*">
-                    </label>
-                </div>
-                <div class="magia-titulo">${nome || 'Nova Magia'}</div>
-                <i class="fas fa-chevron-down magia-expandir"></i>
+            <div class="magia-content">
+            <div class="magia-imagem-container">
+                <img class="magia-imagem" src="${imagemURL || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjYzA1M2RiIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptLTEgMTVoMnYyaC0ydi0yem0wLTEzaDJ2MTBoLTJWNnoiLz48L3N2Zz4='}" alt="Ícone de magia">
+                <label class="magia-upload-label" title="Alterar imagem">
+                    <i class="fas fa-camera"></i>
+                    <input type="file" class="magia-upload" accept="image/*">
+                </label>
             </div>
-            <div class="magia-detalhes" style="display: none;">
+            <div class="magia-campos">
                 <input type="text" class="magia-nome" placeholder="Nome da Magia" value="${nome}">
                 <input type="text" class="magia-nivel" placeholder="Nível (ex: 3°)" value="${nivel}">
                 <input type="text" class="magia-dado-acerto" placeholder="Dado de Acerto (ex: 2d20)" value="${dadoAcerto}">
                 <input type="text" class="magia-dano" placeholder="Dano (ex: 4d6)" value="${dano}">
                 <input type="text" class="magia-estamina" placeholder="Estamina (ex: 3)" value="${estamina}">
                 <textarea class="magia-descricao" placeholder="Descrição detalhada...">${descricao}</textarea>
-                <button class="btn-remover-magia" title="Remover magia">
-                    <i class="fas fa-trash"></i> Remover
-                </button>
             </div>
-        `;
+        </div>
+        <button class="btn-remover-magia" title="Remover magia">
+            <i class="fas fa-trash"></i> Remover Magia
+        </button>
+    `;
         document.getElementById('magias-lista').appendChild(div);
 
-        // Configura os listeners
-        const cabecalho = div.querySelector('.magia-cabecalho');
-        const titulo = div.querySelector('.magia-titulo');
-        const expandir = div.querySelector('.magia-expandir');
-        const detalhes = div.querySelector('.magia-detalhes');
+        // Elementos
         const upload = div.querySelector('.magia-upload');
         const imagem = div.querySelector('.magia-imagem');
-        const inputs = div.querySelectorAll('input, textarea');
-        
-    // Função para alternar visibilidade
-    const toggleDetalhes = () => {
-        detalhes.style.display = detalhes.style.display === 'none' ? 'grid' : 'none';
-        expandir.classList.toggle('fa-rotate-180');
-    };
+        const btnRemover = div.querySelector('.btn-remover-magia');
 
-        // Verifica se o clique foi em um elemento que deve manter o foco
-        const shouldKeepFocus = (target) => {
-            return target.matches('input, textarea, [contenteditable="true"]');
-        };
-
-            // Listener modificado para o cabeçalho
-    cabecalho.addEventListener('click', (e) => {
-        // Não faz nada se o clique foi em um elemento que deve manter o foco
-        if (shouldKeepFocus(e.target) || e.target.closest('input, textarea, [contenteditable="true"]')) {
-            return;
-        }
-        
-        // Alterna a visibilidade apenas para cliques válidos
-        if (e.target === cabecalho || e.target === titulo || e.target === expandir || 
-            e.target.classList.contains('magia-imagem-container') || 
-            e.target.classList.contains('magia-upload-label')) {
-            toggleDetalhes();
-        }
-    });
-    
-
-    // Upload de imagem
-    upload.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file && file.type.match('image.*')) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                imagem.src = event.target.result;
-                salvarFicha(loggedPlayer.id);
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    
-
-    // Listeners para os campos de entrada
-    inputs.forEach(input => {
-        // Salva automaticamente
-        input.addEventListener('input', () => {
-            if (input.classList.contains('magia-nome')) {
-                titulo.textContent = input.value || 'Nova Magia';
+        // Upload de imagem
+        upload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && file.type.match('image.*')) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    imagem.src = event.target.result;
+                    salvarFicha(loggedPlayer.id);
+                };
+                reader.readAsDataURL(file);
             }
-            salvarFicha(loggedPlayer.id);
         });
 
-        // Impede a propagação do evento para o cabeçalho
-        input.addEventListener('click', (e) => {
-            e.stopPropagation();
+        // Listener para salvar (com debounce)
+        let saveTimeout;
+        div.querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('input', () => {
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(() => {
+                    salvarFicha(loggedPlayer.id);
+                }, 1000); // Salva após 1 segundo de inatividade
+            });
         });
-    });
 
-    // Listener para remover magia
-    div.querySelector('.btn-remover-magia').addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (confirm('Remover esta magia?')) {
-            div.remove();
-            salvarFicha(loggedPlayer.id);
-        }
-    });
-
-    // Abre automaticamente se estiver vazia
-    if (!nome && !nivel && !dadoAcerto && !dano && !estamina && !descricao) {
-        toggleDetalhes();
+// Listener para remover
+btnRemover.addEventListener('click', () => {
+    if (confirm('Remover esta magia?')) {
+        div.remove();
+        salvarFicha(loggedPlayer.id);
     }
-}
+});
+    }
 
     // Configura listeners para campos de input
     function setupInputListeners(container) {
@@ -488,7 +439,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (input.classList.contains('nivel-pericia')) {
                         updatePericiaColor(input);
                     }
-                }, 500);
+                }, 1000); // Aumentei o debounce para 1 segundo
             });
         });
     }
@@ -539,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (input.classList.contains('nivel-pericia')) {
                             updatePericiaColor(input);
                         }
-                    }, 500);
+                    }, 1000);
                 });
             }
         });
