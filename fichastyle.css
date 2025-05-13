@@ -14,7 +14,7 @@ body {
 /* Container Principal */
 #ficha-container {
     width: 100%;
-    max-width: 800px;
+    max-width: 1000px; /* Aumentei de 800px para 1000px */
     margin: 20px auto;
 }
 
@@ -23,7 +23,7 @@ body {
     background-color: #330150;
     border: 2px solid #c053db;
     border-radius: 10px;
-    padding: 25px;
+    padding: 30px; /* Aumentei de 25px */
     box-shadow: 0 0 20px rgba(192, 83, 219, 0.3);
 }
 
@@ -728,6 +728,8 @@ textarea:focus::placeholder {
 }
 
 /* Estilos para a seção de Armas */
+/* ESTILO PARA ARMAS - VERSÃO SIMPLIFICADA E CONSISTENTE */
+
 .armas-container {
     margin-top: 30px;
     border-top: 1px solid #c053db;
@@ -737,66 +739,99 @@ textarea:focus::placeholder {
 .armas-container h2 {
     color: #c053db;
     margin-bottom: 15px;
+    font-size: 1.4em;
 }
 
+/* Container de lista de armas */
+#armas-lista {
+    margin-bottom: 15px;
+}
+
+/* Item individual de arma */
 .arma-item {
-    display: grid;
-    grid-template-columns: 1fr 120px 120px 1fr auto;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 10px;
-    padding: 10px;
     background-color: #240138;
     border: 1px solid #9c27b0;
     border-radius: 5px;
+    padding: 12px;
+    margin-bottom: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
 }
 
+/* Campos da arma - mantendo padrão existente */
 .arma-item input[type="text"],
 .arma-item textarea {
     background-color: #1a0033;
     color: #c053db;
     border: 1px solid #c053db;
     border-radius: 5px;
-    padding: 8px;
-    width: 100%;
+    padding: 8px 10px;
+    font-size: 14px;
+    flex-grow: 1;
+    min-width: 120px;
 }
 
-.arma-item textarea {
+/* Campos de dados específicos (menores) */
+.arma-dado-acerto,
+.arma-dano {
+    flex: 0 0 80px;
+    text-align: center;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+/* Textarea de descrição */
+.arma-descricao {
     min-height: 60px;
+    width: 100%;
     resize: vertical;
 }
 
+/* Botão de remover - igual outras seções */
 .btn-remover-arma {
     background-color: #f44336;
     color: white;
     border: none;
-    border-radius: 5px;
-    padding: 8px;
+    border-radius: 4px;
+    padding: 6px 10px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    font-size: 13px;
+    transition: background-color 0.2s;
 }
 
 .btn-remover-arma:hover {
     background-color: #d32f2f;
 }
 
-.btn-arma {
+/* Botão de adicionar - padrão existente */
+#adicionar-arma {
     background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 5px;
     padding: 8px 15px;
     cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s;
+    font-size: 14px;
+    transition: background-color 0.2s;
 }
 
-.btn-arma:hover {
+#adicionar-arma:hover {
     background-color: #45a049;
 }
 
-@media (max-width: 768px) {
+/* RESPONSIVIDADE */
+@media (max-width: 600px) {
     .arma-item {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .arma-item input[type="text"],
+    .arma-dado-acerto,
+    .arma-dano {
+        width: 100%;
+        flex: 1 1 100%;
     }
 }

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ficha - Lua Nova</title>
     <link rel="stylesheet" href="fichastyle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
@@ -309,15 +310,18 @@
     <button type="button" id="adicionar-item" class="btn-inventario">+ Adicionar Item</button>
 </div>
 <!-- Seção de Armas -->
+<!-- Seção de Armas - Mantendo o padrão -->
 <div class="armas-container">
     <h2>Armas</h2>
     <div id="armas-lista">
-        <!-- Armas serão adicionadas aqui dinamicamente -->
+        <!-- Itens serão adicionados dinamicamente -->
     </div>
-    <button type="button" id="adicionar-arma" class="btn-arma">+ Adicionar Arma</button>
+    <button type="button" id="adicionar-arma" class="btn-adicionar">
+        <i class="fas fa-plus"></i> Adicionar Arma
+    </button>
 </div>
 
-    </div>
+</div>
 
     
     <button id="gerar-pdf">Salvar como PDF</button>

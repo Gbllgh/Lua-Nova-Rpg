@@ -305,23 +305,25 @@ document.addEventListener('DOMContentLoaded', function() {
             div.className = 'arma-item';
             div.innerHTML = `
                 <input type="text" class="arma-nome" placeholder="Nome da arma" value="${nome}">
-                <input type="text" class="arma-dado-acerto" placeholder="Dado de acerto (ex: 2d20)" value="${dadoAcerto}">
+                <input type="text" class="arma-dado-acerto" placeholder="Dado (ex: 2d20)" value="${dadoAcerto}">
                 <input type="text" class="arma-dano" placeholder="Dano (ex: 4d4)" value="${dano}">
                 <textarea class="arma-descricao" placeholder="Descrição...">${descricao}</textarea>
-                <button class="btn-remover-arma">Remover</button>
+                <button class="btn-remover-arma" title="Remover arma">
+                    <i class="fas fa-trash"></i>
+                </button>
             `;
             armasLista.appendChild(div);
             
-            // Adiciona listeners para os novos campos
             setupInputListeners(div);
             
-            div.querySelector('.btn-remover-arma').addEventListener('click', () => {
-                if (confirm('Remover esta arma?')) {
-                    div.remove();
-                    salvarFicha(loggedPlayer.id);
-                }
-            });
+    // Listener para remover
+    div.querySelector('.btn-remover-arma').addEventListener('click', function() {
+        if (confirm('Remover esta arma?')) {
+            div.remove();
+            salvarFicha(loggedPlayer.id);
         }
+    });
+}
 
     // Configura listeners para campos de input
     function setupInputListeners(container) {
