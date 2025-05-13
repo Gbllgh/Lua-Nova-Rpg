@@ -401,53 +401,80 @@ document.addEventListener('DOMContentLoaded', function() {
         const detalhes = div.querySelector('.magia-detalhes');
         const upload = div.querySelector('.magia-upload');
         const imagem = div.querySelector('.magia-imagem');
-
-        // Expansão/colapso
-        titulo.addEventListener('click', toggleDetalhes);
-        expandir.addEventListener('click', toggleDetalhes);
+        const inputs = div.querySelectorAll('input, textarea');
         
-        function toggleDetalhes() {
-            detalhes.style.display = detalhes.style.display === 'none' ? 'grid' : 'none';
-            expandir.classList.toggle('fa-rotate-180');
-        }
-        // Upload de imagem
-        upload.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file && file.type.match('image.*')) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    imagem.src = event.target.result;
-                    salvarFicha(loggedPlayer.id);
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+    // Função para alternar visibilidade
+    const toggleDetalhes = () => {
+        detalhes.style.display = detalhes.style.display === 'none' ? 'grid' : 'none';
+        expandir.classList.toggle('fa-rotate-180');
+    };
 
-        // Listeners para salvar automaticamente
-    div.querySelectorAll('input, textarea').forEach(input => {
+        // Verifica se o clique foi em um elemento que deve manter o foco
+        const shouldKeepFocus = (target) => {
+            return target.matches('input, textarea, [contenteditable="true"]');
+        };
+
+            // Listener modificado para o cabeçalho
+    cabecalho.addEventListener('click', (e) => {
+        // Não faz nada se o clique foi em um elemento que deve manter o foco
+        if (shouldKeepFocus(e.target) || e.target.closest('input, textarea, [contenteditable="true"]')) {
+            return;
+        }
+        
+        // Alterna a visibilidade apenas para cliques válidos
+        if (e.target === cabecalho || e.target === titulo || e.target === expandir || 
+            e.target.classList.contains('magia-imagem-container') || 
+            e.target.classList.contains('magia-upload-label')) {
+            toggleDetalhes();
+        }
+    });
+    
+
+    // Upload de imagem
+    upload.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.match('image.*')) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                imagem.src = event.target.result;
+                salvarFicha(loggedPlayer.id);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    
+
+    // Listeners para os campos de entrada
+    inputs.forEach(input => {
+        // Salva automaticamente
         input.addEventListener('input', () => {
-            // Atualiza o título se for o campo nome
             if (input.classList.contains('magia-nome')) {
                 titulo.textContent = input.value || 'Nova Magia';
             }
             salvarFicha(loggedPlayer.id);
         });
-    });
-        // Listener para remover
-        div.querySelector('.btn-remover-magia').addEventListener('click', function(e) {
-            e.stopPropagation();
-            if (confirm('Remover esta magia?')) {
-                div.remove();
-                salvarFicha(loggedPlayer.id);
-            }
-        });
 
-            // Abre automaticamente se estiver vazia (nova magia)
+        // Impede a propagação do evento para o cabeçalho
+        input.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    });
+
+    // Listener para remover magia
+    div.querySelector('.btn-remover-magia').addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (confirm('Remover esta magia?')) {
+            div.remove();
+            salvarFicha(loggedPlayer.id);
+        }
+    });
+
+    // Abre automaticamente se estiver vazia
     if (!nome && !nivel && !dadoAcerto && !dano && !estamina && !descricao) {
         toggleDetalhes();
     }
 }
-
 
     // Configura listeners para campos de input
     function setupInputListeners(container) {
