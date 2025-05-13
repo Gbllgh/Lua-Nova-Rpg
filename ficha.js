@@ -396,19 +396,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Configura os listeners
         const cabecalho = div.querySelector('.magia-cabecalho');
+        const titulo = div.querySelector('.magia-titulo');
+        const expandir = div.querySelector('.magia-expandir');
         const detalhes = div.querySelector('.magia-detalhes');
         const upload = div.querySelector('.magia-upload');
         const imagem = div.querySelector('.magia-imagem');
 
         // Expansão/colapso
-        cabecalho.addEventListener('click', (e) => {
-            if (!e.target.classList.contains('magia-upload') && 
-                !e.target.classList.contains('fa-camera')) {
-                detalhes.style.display = detalhes.style.display === 'none' ? 'grid' : 'none';
-                div.querySelector('.fa-chevron-down').classList.toggle('fa-rotate-180');
-            }
-        });
-
+        titulo.addEventListener('click', toggleDetalhes);
+        expandir.addEventListener('click', toggleDetalhes);
+        
+        function toggleDetalhes() {
+            detalhes.style.display = detalhes.style.display === 'none' ? 'grid' : 'none';
+            expandir.classList.toggle('fa-rotate-180');
+        }
         // Upload de imagem
         upload.addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -423,10 +424,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Listeners para salvar automaticamente
-        div.querySelectorAll('input, textarea').forEach(input => {
-            input.addEventListener('input', () => salvarFicha(loggedPlayer.id));
+    div.querySelectorAll('input, textarea').forEach(input => {
+        input.addEventListener('input', () => {
+            // Atualiza o título se for o campo nome
+            if (input.classList.contains('magia-nome')) {
+                titulo.textContent = input.value || 'Nova Magia';
+            }
+            salvarFicha(loggedPlayer.id);
         });
-
+    });
         // Listener para remover
         div.querySelector('.btn-remover-magia').addEventListener('click', function(e) {
             e.stopPropagation();
@@ -435,7 +441,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 salvarFicha(loggedPlayer.id);
             }
         });
+
+            // Abre automaticamente se estiver vazia (nova magia)
+    if (!nome && !nivel && !dadoAcerto && !dano && !estamina && !descricao) {
+        toggleDetalhes();
     }
+}
+
 
     // Configura listeners para campos de input
     function setupInputListeners(container) {
