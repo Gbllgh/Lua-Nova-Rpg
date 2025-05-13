@@ -166,6 +166,8 @@ document.addEventListener('DOMContentLoaded', function() {
             resistencias: coletarResistencias(),
             itens: coletarItens(),
             armas: coletarArmas(),
+            magias: coletarMagias(),
+
 
             ultimaAtualizacao: firebase.database.ServerValue.TIMESTAMP
         };
@@ -225,6 +227,18 @@ document.addEventListener('DOMContentLoaded', function() {
             dadoAcerto: arma.querySelector('.arma-dado-acerto').value,
             dano: arma.querySelector('.arma-dano').value,
             descricao: arma.querySelector('.arma-descricao').value
+        }));
+    }
+
+    function coletarMagias() {
+        return Array.from(document.querySelectorAll('.magia-item')).map(magia => ({
+            nome: magia.querySelector('.magia-nome').value,
+            nivel: magia.querySelector('.magia-nivel').value,
+            dadoAcerto: magia.querySelector('.magia-dado-acerto').value,
+            dano: magia.querySelector('.magia-dano').value,
+            estamina: magia.querySelector('.magia-estamina').value,
+            descricao: magia.querySelector('.magia-descricao').value,
+            imagemURL: magia.querySelector('.magia-imagem').src
         }));
     }
 
@@ -319,6 +333,89 @@ document.addEventListener('DOMContentLoaded', function() {
     // Listener para remover
     div.querySelector('.btn-remover-arma').addEventListener('click', function() {
         if (confirm('Remover esta arma?')) {
+            div.remove();
+            salvarFicha(loggedPlayer.id);
+        }
+    });
+}
+
+
+// Função para adicionar magia
+function adicionarMagia(
+    nome = '', 
+    nivel = '', 
+    dadoAcerto = '', 
+    dano = '', 
+    estamina = '', 
+    descricao = '', 
+    imagemURL = ''
+) {
+    const div = document.createElement('div');
+    div.className = 'magia-item';
+    div.innerHTML = `
+        <div class="magia-cabecalho">
+            <div class="magia-imagem-container">
+                <img class="magia-imagem" src="${imagemURL || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjYzA1M2RiIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptLTEgMTVoMnYyaC0ydi0yem0wLTEzaDJ2MTBoLTJWNnoiLz48L3N2Zz4='}" alt="Ícone de magia">
+                <label class="magia-upload-label" title="Alterar imagem">
+                    <i class="fas fa-camera"></i>
+                    <input type="file" class="magia-upload" accept="image/*">
+                </label>
+            </div>
+            <div class="magia-titulo">${nome || 'Nova Magia'}</div>
+            <i class="fas fa-chevron-down magia-expandir"></i>
+        </div>
+        <div class="magia-detalhes" style="display: none;">
+            <input type="text" class="magia-nome" placeholder="Nome da Magia" value="${nome}">
+            <input type="text" class="magia-nivel" placeholder="Nível (ex: 3°)" value="${nivel}">
+            <input type="text" class="magia-dado-acerto" placeholder="Dado de Acerto (ex: 2d20)" value="${dadoAcerto}">
+            <input type="text" class="magia-dano" placeholder="Dano (ex: 4d6)" value="${dano}">
+            <input type="text" class="magia-estamina" placeholder="Estamina (ex: 3)" value="${estamina}">
+            <textarea class="magia-descricao" placeholder="Descrição detalhada...">${descricao}</textarea>
+            <button class="btn-remover-magia" title="Remover magia">
+                <i class="fas fa-trash"></i> Remover
+            </button>
+        </div>
+    `;
+    document.getElementById('magias-lista').appendChild(div);
+
+    
+    // Configura os listeners
+    const cabecalho = div.querySelector('.magia-cabecalho');
+    const detalhes = div.querySelector('.magia-detalhes');
+    const upload = div.querySelector('.magia-upload');
+    const imagem = div.querySelector('.magia-imagem');
+
+    // Expansão/colapso
+    cabecalho.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('magia-upload') && 
+            !e.target.classList.contains('fa-camera')) {
+            detalhes.style.display = detalhes.style.display === 'none' ? 'grid' : 'none';
+            div.querySelector('.fa-chevron-down').classList.toggle('fa-rotate-180');
+        }
+    });
+
+    // Upload de imagem
+    upload.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.match('image.*')) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                imagem.src = event.target.result;
+                salvarFicha(loggedPlayer.id);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Listeners para salvar automaticamente
+    div.querySelectorAll('input, textarea').forEach(input => {
+        input.addEventListener('input', () => salvarFicha(loggedPlayer.id));
+    });
+
+    // Listener para remover
+    div.querySelector('.btn-remover-magia').addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (confirm('Remover esta magia?')) {
             div.remove();
             salvarFicha(loggedPlayer.id);
         }
@@ -424,6 +521,7 @@ document.addEventListener('DOMContentLoaded', function() {
     adicionarResistenciaBtn.addEventListener('click', () => adicionarResistencia());
     adicionarItemBtn.addEventListener('click', () => adicionarItem());
     adicionarArmaBtn.addEventListener('click', () => adicionarArma());
+    document.getElementById('adicionar-magia').addEventListener('click', () => adicionarMagia());
 
 
     // ---------- INICIALIZAÇÃO ----------

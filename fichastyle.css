@@ -835,3 +835,167 @@ textarea:focus::placeholder {
         flex: 1 1 100%;
     }
 }
+/* Estilos para a seção de Magias */
+.magias-container {
+    margin-top: 30px;
+    border-top: 1px solid #c053db;
+    padding-top: 20px;
+}
+
+.magia-item {
+    background-color: #240138;
+    border: 1px solid #9c27b0;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.magia-cabecalho {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 15px;
+}
+
+.magia-imagem-container {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 2px solid #c053db;
+    background-color: #1a0033;
+    flex-shrink: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.magia-imagem {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    background-color: #330150;
+}
+
+.magia-upload-label {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: rgba(26, 0, 51, 0.7);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.magia-imagem-container:hover .magia-upload-label {
+    opacity: 1;
+}
+
+.magia-upload-label i {
+    font-size: 20px;
+    color: #c053db;
+}
+
+.magia-upload {
+    display: none;
+}
+
+.magia-titulo {
+    flex-grow: 1;
+    font-weight: bold;
+    color: #c053db;
+}
+
+.magia-detalhes {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 80px 80px auto;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed #9c27b0;
+    align-items: center;
+}
+
+.magia-detalhes input,
+.magia-detalhes textarea {
+    background-color: #1a0033;
+    color: #c053db;
+    border: 1px solid #c053db;
+    border-radius: 5px;
+    padding: 8px 10px;
+    width: 100%;
+}
+
+.magia-nome {
+    grid-column: span 2;
+}
+
+.magia-descricao {
+    grid-column: span 7;
+    min-height: 80px;
+    resize: vertical;
+}
+
+.magia-dado-acerto,
+.magia-dano,
+.magia-estamina {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    text-align: center;
+}
+
+.btn-remover-magia {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    align-self: start;
+}
+
+.btn-magia {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.3s;
+    font-size: 14px;
+}
+
+/* Efeitos de hover */
+.magia-item:hover {
+    box-shadow: 0 0 10px rgba(156, 39, 176, 0.5);
+}
+
+.btn-remover-magia:hover,
+.btn-magia:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    .magia-detalhes {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .magia-nome,
+    .magia-descricao {
+        grid-column: span 2;
+    }
+    
+    .btn-remover-magia {
+        grid-column: span 2;
+    }
+}
