@@ -36,9 +36,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Dados dos jogadores (substitua pelas senhas reais)
     const players = {
-        'jogador1': { name: 'Bia', password: 'bia123', locked: false },
-        'jogador2': { name: 'Pedro', password: 'pedro123', locked: false },
-        'jogador3': { name: 'Julia', password: 'julia123', locked: false },
+        'jogador1': { name: 'Bia', password: 'renato', locked: false },
+        'jogador2': { name: 'Pedro', password: 'airjordan', locked: false },
+        'jogador3': { name: 'Julia', password: 'caim', locked: false },
         'jogador4': { name: 'Kaillan', password: 'kaillan123', locked: false },
         'jogador5': { name: 'Miguel', password: 'miguel123', locked: false }
 
