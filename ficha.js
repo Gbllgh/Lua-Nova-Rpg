@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const armasLista = document.getElementById('armas-lista');
     const adicionarArmaBtn = document.getElementById('adicionar-arma');
     const adicionarMagiaBtn = document.getElementById('adicionar-magia');
+    const personagemUpload = document.getElementById('personagem-upload');
+    const personagemImagem = document.getElementById('personagem-imagem');
+    const removerImagemBtn = document.getElementById('remover-imagem');
 
     // Configuração do Firebase
     const firebaseConfig = {
@@ -66,6 +69,8 @@ document.addEventListener('DOMContentLoaded', function() {
             adicionarArma();
             adicionarMagia();
         }
+        
+        atualizarBotaoRemoverImagem();
     }
 
     // Preenche os campos da ficha
@@ -80,6 +85,18 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('fortitude').value = dados.fortitude || "0";
         document.getElementById('historia').value = dados.historia || "";
         
+        // Imagem do personagem
+        if (dados.imagemPersonagem) {
+            personagemImagem.src = dados.imagemPersonagem;
+            // Verifica se é a imagem padrão
+            if (dados.imagemPersonagem.includes('data:image/svg+xml')) {
+                personagemImagem.parentElement.parentElement.classList.add('default-image');
+                removerImagemBtn.style.display = 'none';
+            } else {
+                personagemImagem.parentElement.parentElement.classList.remove('default-image');
+                removerImagemBtn.style.display = 'flex';
+            }
+        }
         // Status
         document.getElementById('vida').value = dados.vida || "10";
         document.getElementById('vida-max').value = dados.vidaMax || "10";
@@ -130,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
             adicionarArma();
         }
 
-        // Magias (versão simplificada sem toggle)
+        // Magias
         const magiasLista = document.getElementById('magias-lista');
         magiasLista.innerHTML = "";
         if (dados.magias?.length > 0) {
@@ -148,8 +165,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         updateStatusBars();
+        atualizarBotaoRemoverImagem();
     }
 
+   // Atualiza visibilidade do botão de remover imagem
+   function atualizarBotaoRemoverImagem() {
+    // Verifica se a imagem atual NÃO é a imagem padrão (SVG)
+    const isDefaultImage = personagemImagem.src.includes('data:image/svg+xml');
+    removerImagemBtn.style.display = isDefaultImage ? 'none' : 'flex';
+}
+    
     // Salva a ficha no Firebase
     async function salvarFichaNoFirebase(playerId, dados) {
         try {
@@ -174,6 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
             carisma: document.getElementById('carisma').value,
             fortitude: document.getElementById('fortitude').value,
             historia: document.getElementById('historia').value,
+            imagemPersonagem: personagemImagem.src,
             vida: document.getElementById('vida').value,
             vidaMax: document.getElementById('vida-max').value,
             estamina: document.getElementById('estamina').value,
@@ -190,6 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         localStorage.setItem(`ficha_${playerId}`, JSON.stringify(dados));
         salvarFichaNoFirebase(playerId, dados);
+        atualizarBotaoRemoverImagem();
     }
 
     // ---------- FUNÇÕES AUXILIARES ----------
@@ -247,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }));
     }
 
-    // Coleta dados das magias (simplificado)
+    // Coleta dados das magias
     function coletarMagias() {
         return Array.from(document.querySelectorAll('.magia-item')).map(magia => ({
             nome: magia.querySelector('.magia-nome').value,
@@ -353,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Adiciona nova magia (versão definitiva sem toggle)
+    // Adiciona nova magia
     function adicionarMagia(
         nome = '', 
         nivel = '', 
@@ -367,34 +394,32 @@ document.addEventListener('DOMContentLoaded', function() {
         div.className = 'magia-item';
         div.innerHTML = `
             <div class="magia-content">
-            <div class="magia-imagem-container">
-                <img class="magia-imagem" src="${imagemURL || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjYzA1M2RiIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptLTEgMTVoMnYyaC0ydi0yem0wLTEzaDJ2MTBoLTJWNnoiLz48L3N2Zz4='}" alt="Ícone de magia">
-                <label class="magia-upload-label" title="Alterar imagem">
-                    <i class="fas fa-camera"></i>
-                    <input type="file" class="magia-upload" accept="image/*">
-                </label>
+                <div class="magia-imagem-container">
+                    <img class="magia-imagem" src="${imagemURL || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjYzA1M2RiIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptLTEgMTVoMnYyaC0ydi0yem0wLTEzaDJ2MTBoLTJWNnoiLz48L3N2Zz4='}" alt="Ícone de magia">
+                    <label class="magia-upload-label" title="Alterar imagem">
+                        <i class="fas fa-camera"></i>
+                        <input type="file" class="magia-upload" accept="image/*">
+                    </label>
+                </div>
+                <div class="magia-campos">
+                    <input type="text" class="magia-nome" placeholder="Nome da Magia" value="${nome}">
+                    <input type="text" class="magia-nivel" placeholder="Nível (ex: 3°)" value="${nivel}">
+                    <input type="text" class="magia-dado-acerto" placeholder="Dado de Acerto (ex: 2d20)" value="${dadoAcerto}">
+                    <input type="text" class="magia-dano" placeholder="Dano (ex: 4d6)" value="${dano}">
+                    <input type="text" class="magia-estamina" placeholder="Estamina (ex: 3)" value="${estamina}">
+                    <textarea class="magia-descricao" placeholder="Descrição detalhada...">${descricao}</textarea>
+                </div>
             </div>
-            <div class="magia-campos">
-                <input type="text" class="magia-nome" placeholder="Nome da Magia" value="${nome}">
-                <input type="text" class="magia-nivel" placeholder="Nível (ex: 3°)" value="${nivel}">
-                <input type="text" class="magia-dado-acerto" placeholder="Dado de Acerto (ex: 2d20)" value="${dadoAcerto}">
-                <input type="text" class="magia-dano" placeholder="Dano (ex: 4d6)" value="${dano}">
-                <input type="text" class="magia-estamina" placeholder="Estamina (ex: 3)" value="${estamina}">
-                <textarea class="magia-descricao" placeholder="Descrição detalhada...">${descricao}</textarea>
-            </div>
-        </div>
-        <button class="btn-remover-magia" title="Remover magia">
-            <i class="fas fa-trash"></i> Remover Magia
-        </button>
-    `;
+            <button class="btn-remover-magia" title="Remover magia">
+                <i class="fas fa-trash"></i> Remover Magia
+            </button>
+        `;
         document.getElementById('magias-lista').appendChild(div);
 
-        // Elementos
         const upload = div.querySelector('.magia-upload');
         const imagem = div.querySelector('.magia-imagem');
         const btnRemover = div.querySelector('.btn-remover-magia');
 
-        // Upload de imagem
         upload.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file && file.type.match('image.*')) {
@@ -407,24 +432,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Listener para salvar (com debounce)
         let saveTimeout;
         div.querySelectorAll('input, textarea').forEach(input => {
             input.addEventListener('input', () => {
                 clearTimeout(saveTimeout);
                 saveTimeout = setTimeout(() => {
                     salvarFicha(loggedPlayer.id);
-                }, 1000); // Salva após 1 segundo de inatividade
+                }, 1000);
             });
         });
 
-// Listener para remover
-btnRemover.addEventListener('click', () => {
-    if (confirm('Remover esta magia?')) {
-        div.remove();
-        salvarFicha(loggedPlayer.id);
-    }
-});
+        btnRemover.addEventListener('click', () => {
+            if (confirm('Remover esta magia?')) {
+                div.remove();
+                salvarFicha(loggedPlayer.id);
+            }
+        });
     }
 
     // Configura listeners para campos de input
@@ -439,7 +462,7 @@ btnRemover.addEventListener('click', () => {
                     if (input.classList.contains('nivel-pericia')) {
                         updatePericiaColor(input);
                     }
-                }, 1000); // Aumentei o debounce para 1 segundo
+                }, 1000);
             });
         });
     }
@@ -496,7 +519,122 @@ btnRemover.addEventListener('click', () => {
         });
     }
 
+    // ---------- FUNÇÃO DE GERAR PDF REFEITA ----------
+    function gerarPDF() {
+        // Elementos que serão ocultados
+        const elementosParaOcultar = [
+            document.getElementById('logout-btn'),
+            document.getElementById('gerar-pdf'),
+            ...document.querySelectorAll('button'),
+            ...document.querySelectorAll('input[type="file"]'),
+            ...document.querySelectorAll('.upload-label')
+        ];
+
+        // Salvar estilos originais
+        const estilosOriginais = elementosParaOcultar.map(el => ({
+            element: el,
+            display: el.style.display
+        }));
+
+        // Ocultar elementos
+        elementosParaOcultar.forEach(el => {
+            if (el) el.style.display = 'none';
+        });
+
+        // Configurações do PDF
+        const opcoes = {
+            margin: 10,
+            filename: `ficha_${document.getElementById('nome-personagem').value || 'sem-nome'}.pdf`,
+            image: { 
+                type: 'jpeg', 
+                quality: 0.98 
+            },
+            html2canvas: { 
+                scale: 2,
+                scrollX: 0,
+                scrollY: 0,
+                windowWidth: document.getElementById('ficha-rpg').scrollWidth + 100,
+                useCORS: true,
+                allowTaint: true
+            },
+            jsPDF: { 
+                unit: 'mm', 
+                format: 'a4', 
+                orientation: 'portrait' 
+            }
+        };
+
+        // Elemento da ficha
+        const elementoFicha = document.getElementById('ficha-rpg');
+
+        // Ajustar temporariamente a imagem
+        const estiloOriginalImagem = personagemImagem.style.cssText;
+        personagemImagem.style.maxWidth = 'none';
+        personagemImagem.style.maxHeight = 'none';
+        personagemImagem.style.width = '200px';
+        personagemImagem.style.height = 'auto';
+
+        // Gerar PDF
+        html2pdf()
+            .set(opcoes)
+            .from(elementoFicha)
+            .toPdf()
+            .get('pdf')
+            .then(function(pdf) {
+                // Restaurar estilos após a geração
+                estilosOriginais.forEach(item => {
+                    if (item.element) {
+                        item.element.style.display = item.display;
+                    }
+                });
+                personagemImagem.style.cssText = estiloOriginalImagem;
+            })
+            .save();
+    }
+
     // ---------- EVENT LISTENERS ----------
+
+    // Upload de imagem do personagem
+    personagemUpload.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file && file.type.match('image.*')) {
+            const reader = new FileReader();
+            
+            reader.onload = function(event) {
+                // Remove os estilos específicos da imagem padrão
+                personagemImagem.style.filter = '';
+                personagemImagem.style.padding = '';
+                personagemImagem.style.backgroundColor = '';
+                
+                personagemImagem.src = event.target.result;
+                salvarFicha(loggedPlayer.id);
+                removerImagemBtn.classList.remove('hidden');
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Remover imagem do personagem
+    removerImagemBtn.addEventListener('click', function() {
+        if (confirm('Remover a imagem do personagem?')) {
+            // Reseta para a imagem padrão com o SVG original
+            const svgBase64 = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IiNjMDUzZGIiPjxwYXRoIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDNjMS42NiAwIDMgMS4zNCAzIDNzLTEuMzQgMy0zIDMtMy0xLjM0LTMtMyAxLjM0LTMgMy0zem0wIDE0LjJjLTIuNSAwLTQuNzEtMS4yOC02LTIuMjIuMDMtMS45OSA0LTMuMDggNi0zLjA4IDEuOTkgMCA1Ljk3IDEuMDkgNiAzLjA4LTEuMjkuOTQtMy41IDIuMjItNiAyLjIyeiIvPjwvc3ZnPg==";
+            personagemImagem.src = svgBase64;
+            
+            // Limpa o input file para permitir nova seleção da mesma imagem
+            personagemUpload.value = '';
+            
+            // Atualiza a ficha e oculta o botão
+            salvarFicha(loggedPlayer.id);
+            removerImagemBtn.classList.add('hidden');
+            
+            // Restaura o estilo visual da imagem padrão
+            personagemImagem.style.filter = 'brightness(0.8)';
+            personagemImagem.style.padding = '20px';
+            personagemImagem.style.backgroundColor = '#330150';
+        }
+    });
 
     logoutBtn.addEventListener('click', () => {
         auth.signOut().then(() => {
@@ -505,24 +643,8 @@ btnRemover.addEventListener('click', () => {
         });
     });
 
-    gerarPdfBtn.addEventListener('click', () => {
-        const nome = document.getElementById('nome-personagem').value || "Sem Nome";
-        const elementsToHide = document.querySelectorAll('#logout-btn, #gerar-pdf');
-        elementsToHide.forEach(el => el.style.display = 'none');
-        
-        html2pdf().set({
-            margin: 10,
-            filename: `ficha_${nome}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { 
-                scale: 2,
-                windowWidth: document.getElementById('ficha-rpg').scrollWidth
-            },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        }).from(document.getElementById('ficha-rpg')).toPdf().get('pdf').then(() => {
-            elementsToHide.forEach(el => el.style.display = '');
-        }).save();
-    });
+    // Listener para gerar PDF
+    gerarPdfBtn.addEventListener('click', gerarPDF);
 
     adicionarHabilidadeBtn.addEventListener('click', () => adicionarHabilidade());
     adicionarResistenciaBtn.addEventListener('click', () => adicionarResistencia());
@@ -567,6 +689,10 @@ btnRemover.addEventListener('click', () => {
         .temp-message.error { background-color: #F44336; }
         .temp-message.info { background-color: #2196F3; }
         .temp-message.fade-out { opacity: 0; }
+        
+        .hidden {
+            display: none !important;
+        }
     `;
     document.head.appendChild(style);
 });

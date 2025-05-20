@@ -979,3 +979,195 @@ textarea:focus::placeholder {
 .temp-message.error { background-color: #F44336; }
 .temp-message.info { background-color: #2196F3; }
 .temp-message.fade-out { opacity: 0; }
+
+/* Container principal para atributos e imagem */
+.personagem-container {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.atributos-container {
+    flex: 1;
+}
+
+/* Container da Imagem */
+.imagem-personagem-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    width: 200px;
+}
+/* Estilo para o upload de imagem */
+.imagem-upload {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+
+#personagem-imagem {
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+    border: 2px dashed #c053db;
+    object-fit: cover;
+    background-color: #240138;
+}
+
+.upload-label {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.3s;
+    position: relative;
+}
+
+.upload-label:hover {
+    background-color: #45a049;
+}
+
+#personagem-upload {
+    display: none;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .personagem-container {
+        flex-direction: column;
+    }
+    
+    .imagem-personagem-container {
+        width: 100%;
+        order: -1; /* Coloca a imagem acima em mobile */
+        margin-bottom: 20px;
+    }
+}
+
+/* Estilos para a seção superior */
+.top-section {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.atributos-principais {
+    flex: 1;
+    margin-left: 50px;
+    min-width: 300px;
+}
+
+.imagem-personagem-container {
+    width: 200px;
+    flex-shrink: 0;
+}
+
+/* Estilo para os atributos secundários */
+.atributos-secundarios {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .top-section {
+        flex-direction: column;
+    }
+    
+    .imagem-personagem-container {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    .atributos-secundarios {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Estilos para os controles da imagem */
+.imagem-controles {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    
+}
+
+/* Botão de remover imagem */
+.btn-remover-imagem {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.btn-remover-imagem:hover {
+    background-color: #d32f2f;
+}
+
+
+.upload-label {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    text-align: center;
+}
+
+.upload-label input[type="file"] {
+    display: none;
+}
+
+/* Estilo para imagem padrão quando não há imagem */
+/* Estilo para imagem padrão (SVG) */
+#personagem-imagem[src*="base64"] {
+    filter: brightness(0.8);
+    padding: 20px;
+    background-color: #330150;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .imagem-personagem-container {
+        width: 100%;
+    }
+    
+    #personagem-imagem {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .imagem-controles {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .upload-label,
+    .btn-remover-imagem {
+        width: 100%;
+        justify-content: center;
+    }
+}
+

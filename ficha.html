@@ -12,80 +12,105 @@
     <div id="ficha-container">
         <div class="ficha" id="ficha-rpg">
             <h1>Lua Nova - <span id="current-player"></span></h1>
-            <div class="atributo">
-                <label for="nome-personagem">Nome do Personagem:</label>
-                <input type="text" id="nome-personagem" placeholder="Ex: Bartolomeu H. Romeu Denis da Silva">
-            </div>
-            <div class="atributo">
-                <label for="chale">Chalé:</label>
-                <input type="text" id="chale" placeholder="Ex: Hermes">
-            </div>
-            <div class="atributo">
-                <label for="forca">Força:</label>
-                <input type="number" class="atb" id="forca" value="0">
-            </div>
-            <div class="atributo">
-                <label for="agilidade">Agilidade:</label>
-                <input type="number" class="atb" id="agilidade" value="0">
-            </div>
-            <div class="atributo">
-                <label for="inteligencia">Inteligência:</label>
-                <input type="number" class="atb" id="inteligencia" value="0">
-            </div>
-            <div class="atributo">
-                <label for="carisma">Carisma:</label>
-                <input type="number" class="atb" id="carisma" value="0">
-            </div>
-            <div class="atributo">
-                <label for="fortitude">Fortitude:</label>
-                <input type="number" class="atb" id="fortitude" value="0">
-            </div>
-            <!-- Seção de Status -->
-<div class="status-container">
-    <h2>Status</h2>
-    
-<!-- Barra de Vida -->
-<div class="status-item">
-    <label for="vida">Vida:</label>
-    <div class="status-bar-container">
-        <div class="status-bar" id="vida-bar">
-            <div class="status-fill" id="vida-fill"></div>
-        </div>
-        <input type="number" id="vida" value="10" class="status-input">
-        <span>/</span>
-        <input type="number" id="vida-max" min="1" value="10" class="status-max-input">
-    </div>
-</div>
+            
+            <!-- Seção Superior - Imagem e Atributos Principais -->
+            <div class="top-section">
+                <!-- Container da Imagem -->
+                <div class="imagem-personagem-container">
+                    <div class="imagem-upload">
+                        <img id="personagem-imagem" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IiNjMDUzZGIiPjxwYXRoIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDNjMS42NiAwIDMgMS4zNCAzIDNzLTEuMzQgMy0zIDMtMy0xLjM0LTMtMyAxLjM0LTMgMy0zem0wIDE0LjJjLTIuNSAwLTQuNzEtMS4yOC02LTIuMjIuMDMtMS45OSA0LTMuMDggNi0zLjA4IDEuOTkgMCA1Ljk3IDEuMDkgNiAzLjA4LTEuMjkuOTQtMy41IDIuMjItNiAyLjIyeiIvPjwvc3ZnPg==" alt="Imagem do Personagem">
 
-<!-- Barra de Estamina -->
-<div class="status-item">
-    <label for="estamina">Estamina:</label>
-    <div class="status-bar-container">
-        <div class="status-bar" id="estamina-bar">
-            <div class="status-fill" id="estamina-fill"></div>
-        </div>
-        <input type="number" id="estamina" value="10" class="status-input">
-        <span>/</span>
-        <input type="number" id="estamina-max" min="1" value="10" class="status-max-input">
-    </div>
-</div>
-    
-<!-- Defesa (Escudo SVG) -->
-<!-- Defesa (Escudo SVG) -->
-<div class="status-item">
-    <label for="defesa-input">Defesa:</label>
-    <div class="defesa-container">
-        <div class="escudo-svg-container">
-            <svg class="escudo-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
-                <path class="escudo-fundo" d="M50 5L10 25V60C10 90 30 115 50 120C70 115 90 90 90 60V25Z"/>
-                <foreignObject x="25" y="50" width="50" height="40">
-                    <input type="number" id="defesa-input" min="0" value="0" 
-                           class="defesa-input" xmlns="http://www.w3.org/1999/xhtml"/>
-                </foreignObject>
-            </svg>
-        </div>
-    </div>
-</div>
+                    </div>
+                    <div class="imagem-controles">
+                        <label for="personagem-upload" class="upload-label">
+                            <i class="fas fa-camera"></i> Alterar Imagem
+                            <input type="file" id="personagem-upload" accept="image/*">
+                        </label>
+                        <button id="remover-imagem" class="btn-remover-imagem">
+                            <i class="fas fa-trash"></i> Remover Imagem
+                        </button>
+                    </div>
+                </div>
+                
+                
+                <!-- Container dos Atributos Principais -->
+                <div class="atributos-principais">
+                    <div class="atributo">
+                        <label for="nome-personagem">Nome do Personagem:</label>
+                        <input type="text" id="nome-personagem" placeholder="Ex: Bartolomeu H. Romeu Denis da Silva">
+                    </div>
+                    <div class="atributo">
+                        <label for="chale">Chalé:</label>
+                        <input type="text" id="chale" placeholder="Ex: Hermes">
+                    </div>
+                    
+                    <!-- Barra de Vida -->
+                    <div class="status-item">
+                        <label for="vida">Vida:</label>
+                        <div class="status-bar-container">
+                            <div class="status-bar" id="vida-bar">
+                                <div class="status-fill" id="vida-fill"></div>
+                            </div>
+                            <input type="number" id="vida" value="10" class="status-input">
+                            <span>/</span>
+                            <input type="number" id="vida-max" min="1" value="10" class="status-max-input">
+                        </div>
+                    </div>
+
+                    <!-- Barra de Estamina -->
+                    <div class="status-item">
+                        <label for="estamina">Estamina:</label>
+                        <div class="status-bar-container">
+                            <div class="status-bar" id="estamina-bar">
+                                <div class="status-fill" id="estamina-fill"></div>
+                            </div>
+                            <input type="number" id="estamina" value="10" class="status-input">
+                            <span>/</span>
+                            <input type="number" id="estamina-max" min="1" value="10" class="status-max-input">
+                        </div>
+                    </div>
+                    
+                    <!-- Defesa (Escudo SVG) -->
+                    <div class="status-item">
+                        <label for="defesa-input">Defesa:</label>
+                        <div class="defesa-container">
+                            <div class="escudo-svg-container">
+                                <svg class="escudo-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+                                    <path class="escudo-fundo" d="M50 5L10 25V60C10 90 30 115 50 120C70 115 90 90 90 60V25Z"/>
+                                    <foreignObject x="25" y="50" width="50" height="40">
+                                        <input type="number" id="defesa-input" min="0" value="0" 
+                                               class="defesa-input" xmlns="http://www.w3.org/1999/xhtml"/>
+                                    </foreignObject>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Restante dos Atributos -->
+            <div class="atributos-secundarios">
+                <div class="atributo">
+                    <label for="forca">Força:</label>
+                    <input type="number" class="atb" id="forca" value="0">
+                </div>
+                <div class="atributo">
+                    <label for="agilidade">Agilidade:</label>
+                    <input type="number" class="atb" id="agilidade" value="0">
+                </div>
+                <div class="atributo">
+                    <label for="inteligencia">Inteligência:</label>
+                    <input type="number" class="atb" id="inteligencia" value="0">
+                </div>
+                <div class="atributo">
+                    <label for="carisma">Carisma:</label>
+                    <input type="number" class="atb" id="carisma" value="0">
+                </div>
+                <div class="atributo">
+                    <label for="fortitude">Fortitude:</label>
+                    <input type="number" class="atb" id="fortitude" value="0">
+                </div>
+            </div>
 
 <!-- Resistências/Imunidades -->
 <div class="resistencia-container">
@@ -300,7 +325,6 @@
         <button id="adicionar-habilidade" type="button">+ Adicionar Habilidade</button>
         </div>
     </div>
-        </div>
         <!-- Seção de Inventário -->
 <div class="inventario-container">
     <h2>Inventário</h2>
