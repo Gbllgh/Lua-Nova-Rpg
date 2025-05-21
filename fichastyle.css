@@ -1347,3 +1347,89 @@ textarea:focus::placeholder {
     display: none;
 }
 
+/* Adicione estas regras no final do arquivo, ou ajuste as existentes */
+
+@media (max-width: 768px) {
+    /* Ajustes para ocupar a tela inteira */
+    body {
+        padding: 0;
+        margin: 0;
+        overflow-x: hidden;
+    }
+    
+    #ficha-container {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 15px;
+        box-sizing: border-box;
+        min-height: calc(100vh - 60px); /* 60px é a altura aproximada da barra inferior */
+    }
+    
+    .ficha {
+        width: 100%;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+    
+    /* Ajuste para o menu mobile */
+    .mobile-menu-toggle {
+        top: 15px;
+        right: 15px;
+    }
+    
+    /* Garante que o conteúdo não fique escondido atrás da barra inferior */
+    .mobile-bottom-nav {
+        height: 60px;
+    }
+    
+    /* Espaço extra para o último elemento */
+    #magias-lista {
+        padding-bottom: 20px;
+    }
+}
+
+/* Ajuste adicional para telas muito pequenas */
+@media (max-width: 480px) {
+    #ficha-container {
+        padding: 10px;
+    }
+    
+    .ficha {
+        padding: 10px;
+    }
+    
+    /* Ajuste fino para elementos internos */
+    .atributo input[type="text"],
+    .atributo input[type="number"],
+    .atributo textarea {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+.mobile-header {
+    display: none;
+    background-color: #330150;
+    padding: 10px 15px;
+    border-bottom: 1px solid #c053db;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+}
+
+@media (max-width: 768px) {
+    .mobile-header {
+        display: block;
+    }
+    
+    #current-player {
+        display: none;
+    }
+    
+    #mobile-player-name {
+        color: #c053db;
+        font-weight: bold;
+    }
+}

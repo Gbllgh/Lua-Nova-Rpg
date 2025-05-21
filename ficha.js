@@ -720,5 +720,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+    const mobilePlayerName = document.getElementById('mobile-player-name');
+    if (mobilePlayerName) {
+    mobilePlayerName.textContent = loggedPlayer.name;
+}
     document.head.appendChild(style);
 });
