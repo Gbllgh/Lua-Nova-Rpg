@@ -1409,27 +1409,5 @@ textarea:focus::placeholder {
     }
 }
 
-.mobile-header {
-    display: none;
-    background-color: #330150;
-    padding: 10px 15px;
-    border-bottom: 1px solid #c053db;
-    position: sticky;
-    top: 0;
-    z-index: 900;
-}
 
-@media (max-width: 768px) {
-    .mobile-header {
-        display: block;
-    }
-    
-    #current-player {
-        display: none;
-    }
-    
-    #mobile-player-name {
-        color: #c053db;
-        font-weight: bold;
-    }
-}
+
