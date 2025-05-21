@@ -1171,3 +1171,179 @@ textarea:focus::placeholder {
     }
 }
 
+/* Estilos Gerais Responsivos */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    #ficha-container {
+        padding: 15px;
+        margin: 10px 0;
+    }
+    
+    .ficha {
+        padding: 15px;
+    }
+    
+    .ficha h1 {
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+    
+    /* Layout da seção superior */
+    .top-section {
+        flex-direction: column;
+    }
+    
+    .imagem-personagem-container {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    
+    #personagem-imagem {
+        width: 150px;
+        height: 150px;
+        margin: 0 auto;
+    }
+    
+    .imagem-controles {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .upload-label, 
+    .btn-remover-imagem {
+        width: 100%;
+        margin: 5px 0;
+    }
+    
+    .atributos-principais {
+        margin-left: 0;
+        min-width: 100%;
+    }
+    
+    /* Atributos secundários */
+    .atributos-secundarios {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    /* Perícias */
+    .pericias-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pericia-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .pericia-item label {
+        width: 100%;
+        text-align: left;
+        margin-bottom: 5px;
+    }
+    
+    .nivel-pericia {
+        width: 100%;
+    }
+    
+    /* Barras de status */
+    .status-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .status-item label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    .status-bar-container {
+        width: 100%;
+    }
+    
+    /* Itens, armas e magias */
+    .item-inventario,
+    .arma-item,
+    .magia-item {
+        grid-template-columns: 1fr;
+    }
+    
+    .magia-content {
+        flex-direction: column;
+    }
+    
+    .magia-imagem-container {
+        margin-bottom: 10px;
+    }
+    
+    /* Botões principais */
+    #gerar-pdf, #logout-btn {
+        display: none;
+    }
+    
+    /* Menu mobile */
+    .mobile-menu-toggle {
+        display: block;
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background: #330150;
+        border: 1px solid #c053db;
+        border-radius: 5px;
+        padding: 10px;
+        z-index: 1000;
+        cursor: pointer;
+    }
+    
+    .mobile-bottom-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #330150;
+        border-top: 1px solid #c053db;
+        padding: 10px;
+        justify-content: space-around;
+        z-index: 999;
+    }
+    
+    .mobile-bottom-nav button {
+        background: none;
+        border: none;
+        color: #c053db;
+        font-size: 20px;
+        padding: 10px 20px;
+    }
+    
+    /* Ajustes para telas muito pequenas */
+    @media (max-width: 480px) {
+        .atributos-secundarios {
+            grid-template-columns: 1fr;
+        }
+        
+        .atributo input[type="text"],
+        .atributo input[type="number"],
+        .atributo textarea {
+            font-size: 14px;
+        }
+        
+        .habilidade-item,
+        .resistencia-item,
+        .item-inventario,
+        .arma-item,
+        .magia-item {
+            padding: 10px;
+        }
+    }
+}
+
+/* Esconde elementos mobile em desktop */
+.mobile-menu-toggle,
+.mobile-bottom-nav {
+    display: none;
+}
+

@@ -2,18 +2,23 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ficha - Lua Nova</title>
     <link rel="stylesheet" href="fichastyle.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
+
+    <!-- Menu para Mobile-->
+    <div class="mobile-menu-toggle">
+        <i class="fas fa-bars"></i>
+    </div>
+    
     <div id="ficha-container">
         <div class="ficha" id="ficha-rpg">
             <h1>Lua Nova - <span id="current-player"></span></h1>
             
-            <!-- Seção Superior - Imagem e Atributos Principais -->
             <div class="top-section">
                 <!-- Container da Imagem -->
                 <div class="imagem-personagem-container">
@@ -130,7 +135,6 @@
 <div class="pericias-container">
     <h2>Perícias</h2>
     <div class="pericias-grid">
-        <!-- Luta -->
         <div class="pericia-item">
             <label>Luta:</label>
             <select class="nivel-pericia">
@@ -334,7 +338,6 @@
     <button type="button" id="adicionar-item" class="btn-inventario">+ Adicionar Item</button>
 </div>
 <!-- Seção de Armas -->
-<!-- Seção de Armas - Mantendo o padrão -->
 <div class="armas-container">
     <h2>Armas</h2>
     <div id="armas-lista">
@@ -360,6 +363,11 @@
     
     <button id="gerar-pdf">Salvar como PDF</button>
     <button id="logout-btn">Sair</button>
+
+    <div class="mobile-bottom-nav">
+        <button id="gerar-pdf-mobile"><i class="fas fa-file-pdf"></i></button>
+        <button id="logout-btn-mobile"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>

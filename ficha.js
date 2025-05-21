@@ -694,5 +694,31 @@ document.addEventListener('DOMContentLoaded', function() {
             display: none !important;
         }
     `;
+    // Adiciona toggle para menu mobile
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+    const fichaContainer = document.getElementById('ficha-container');
+    
+    if (mobileMenuToggle) {
+        mobileMenuToggle.addEventListener('click', function() {
+            fichaContainer.classList.toggle('mobile-menu-open');
+        });
+    }
+
+    // Botões mobile
+    const gerarPdfMobile = document.getElementById('gerar-pdf-mobile');
+    const logoutBtnMobile = document.getElementById('logout-btn-mobile');
+    
+    if (gerarPdfMobile) {
+        gerarPdfMobile.addEventListener('click', gerarPDF);
+    }
+    
+    if (logoutBtnMobile) {
+        logoutBtnMobile.addEventListener('click', () => {
+            auth.signOut().then(() => {
+                sessionStorage.removeItem('loggedPlayer');
+                window.location.href = 'index.html';
+            });
+        });
+    }
     document.head.appendChild(style);
 });
