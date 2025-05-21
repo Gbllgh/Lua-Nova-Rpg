@@ -530,78 +530,87 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ---------- FUNÇÃO DE GERAR PDF REFEITA ----------
-    function gerarPDF() {
-        // Elementos que serão ocultados
-        const elementosParaOcultar = [
-            document.getElementById('logout-btn'),
-            document.getElementById('gerar-pdf'),
-            ...document.querySelectorAll('button'),
-            ...document.querySelectorAll('input[type="file"]'),
-            ...document.querySelectorAll('.upload-label')
-        ];
-
-        // Salvar estilos originais
-        const estilosOriginais = elementosParaOcultar.map(el => ({
-            element: el,
-            display: el.style.display
-        }));
-
-        // Ocultar elementos
-        elementosParaOcultar.forEach(el => {
-            if (el) el.style.display = 'none';
-        });
-
-        // Configurações do PDF
+    async function gerarPDF() {
+        // 1. Criar um container temporário
+        const pdfContainer = document.createElement('div');
+        pdfContainer.style.position = 'absolute';
+        pdfContainer.style.left = '-9999px';
+        pdfContainer.style.width = '800px';
+        document.body.appendChild(pdfContainer);
+    
+        // 2. Clonar o conteúdo da ficha
+        const fichaOriginal = document.getElementById('ficha-rpg');
+        const fichaClone = fichaOriginal.cloneNode(true);
+        pdfContainer.appendChild(fichaClone);
+    
+        // 3. Ajustar estilos específicos para PDF
+        fichaClone.style.width = '100%';
+        fichaClone.style.padding = '20px';
+        fichaClone.style.boxSizing = 'border-box';
+        fichaClone.style.background = '#330150';
+        
+        // 4. Processar imagens
+        await processarElementosParaPDF(fichaClone);
+    
+        // 5. Configurações otimizadas
         const opcoes = {
-            margin: 10,
             filename: `ficha_${document.getElementById('nome-personagem').value || 'sem-nome'}.pdf`,
-            image: { 
-                type: 'jpeg', 
-                quality: 0.98 
-            },
-            html2canvas: { 
-                scale: 2,
+            html2canvas: {
+
                 scrollX: 0,
                 scrollY: 0,
-                windowWidth: document.getElementById('ficha-rpg').scrollWidth + 100,
+                logging: true,
                 useCORS: true,
-                allowTaint: true
+                allowTaint: true,
+                backgroundColor: '#330150'
             },
-            jsPDF: { 
-                unit: 'mm', 
-                format: 'a4', 
-                orientation: 'portrait' 
+            jsPDF: {
+                unit: 'mm',
+                format: 'a3',
+                orientation: 'portrait'
             }
         };
-
-        // Elemento da ficha
-        const elementoFicha = document.getElementById('ficha-rpg');
-
-        // Ajustar temporariamente a imagem
-        const estiloOriginalImagem = personagemImagem.style.cssText;
-        personagemImagem.style.maxWidth = 'none';
-        personagemImagem.style.maxHeight = 'none';
-        personagemImagem.style.width = '200px';
-        personagemImagem.style.height = 'auto';
-
-        // Gerar PDF
-        html2pdf()
-            .set(opcoes)
-            .from(elementoFicha)
-            .toPdf()
-            .get('pdf')
-            .then(function(pdf) {
-                // Restaurar estilos após a geração
-                estilosOriginais.forEach(item => {
-                    if (item.element) {
-                        item.element.style.display = item.display;
-                    }
-                });
-                personagemImagem.style.cssText = estiloOriginalImagem;
-            })
-            .save();
+    
+        try {
+            // 6. Adicionar delay para renderização completa
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 7. Gerar PDF
+            await html2pdf()
+                .set(opcoes)
+                .from(fichaClone)
+                .save();
+        } catch (error) {
+            console.error("Erro ao gerar PDF:", error);
+            alert("Erro ao gerar PDF. Verifique o console para detalhes.");
+        } finally {
+            // 8. Limpeza
+            document.body.removeChild(pdfContainer);
+        }
     }
-
+    
+    async function processarElementosParaPDF(container) {
+        // Ajustar imagem do personagem
+        const imgPersonagem = container.querySelector('#personagem-imagem');
+        if (imgPersonagem) {
+            imgPersonagem.style.maxWidth = '180px';
+            imgPersonagem.style.maxHeight = '180px';
+            imgPersonagem.style.width = 'auto';
+            imgPersonagem.style.height = 'auto';
+            imgPersonagem.style.display = 'block';
+            imgPersonagem.style.margin = '0 auto';
+        }
+    
+        // Ajustar outras imagens (magias, etc.)
+        container.querySelectorAll('.magia-imagem').forEach(img => {
+            img.style.maxWidth = '80px';
+            img.style.maxHeight = '80px';
+        });
+    
+        // Remover elementos interativos
+        container.querySelectorAll('button, input[type="file"], .no-print').forEach(el => el.remove());
+    }
+    
     // ---------- EVENT LISTENERS ----------
 
     // Upload de imagem do personagem
@@ -654,7 +663,23 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Listener para gerar PDF
-    gerarPdfBtn.addEventListener('click', gerarPDF);
+// Substitua o listener existente por:
+document.getElementById('gerar-pdf').addEventListener('click', async () => {
+    // Mostrar feedback visual
+    const btn = document.getElementById('gerar-pdf');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gerando PDF...';
+    btn.disabled = true;
+    
+    try {
+        await gerarPDF();
+    } catch (error) {
+        console.error("Erro na geração do PDF:", error);
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+});
 
     adicionarHabilidadeBtn.addEventListener('click', () => adicionarHabilidade());
     adicionarResistenciaBtn.addEventListener('click', () => adicionarResistencia());
