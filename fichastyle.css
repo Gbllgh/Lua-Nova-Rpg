@@ -1409,5 +1409,205 @@ textarea:focus::placeholder {
     }
 }
 
+@media (max-width: 768px) {
+    /* Padroniza todos os inputs de texto */
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+        width: 100% !important;
+        box-sizing: border-box;
+        padding: 10px !important;
+        font-size: 14px !important;
+        margin: 5px 0 !important;
+    }
+    
+    /* Textareas específicas */
+    textarea {
+        min-height: 80px;
+    }
+    
+    /* Inputs dentro de containers especiais */
+    .atributo input[type="text"],
+    .atributo input[type="number"],
+    .atributo textarea,
+    .habilidade-item input,
+    .habilidade-item textarea,
+    .resistencia-item input,
+    .resistencia-item select,
+    .item-inventario input,
+    .item-inventario textarea,
+    .arma-item input,
+    .arma-item textarea,
+    .magia-item input,
+    .magia-item textarea {
+        width: 100% !important;
+        margin: 8px 0 !important;
+    }
+    
+    /* Remove larguras fixas */
+    .atb, .status-input, .status-max-input {
+        width: 100% !important;
+    }
+}
 
+@media (max-width: 768px) {
+    /* Padroniza todos os botões principais */
+    button,
+    .btn-resistencia,
+    .btn-inventario,
+    .btn-adicionar,
+    .btn-magia,
+    #adicionar-habilidade,
+    #adicionar-resistencia,
+    #adicionar-item,
+    #adicionar-arma,
+    #adicionar-magia {
+        width: 100% !important;
+        padding: 12px !important;
+        margin: 10px 0 !important;
+        font-size: 15px !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    /* Ícones nos botões */
+    button i,
+    .btn-resistencia i,
+    .btn-inventario i,
+    .btn-adicionar i,
+    .btn-magia i {
+        font-size: 16px !important;
+    }
+    
+    /* Botões de remover */
+    .remover-habilidade,
+    .btn-remover-resistencia,
+    .btn-remover-item,
+    .btn-remover-arma,
+    .btn-remover-magia {
+        width: 100% !important;
+        margin-top: 10px !important;
+    }
+}
 
+@media (max-width: 768px) {
+    /* Reorganização das barras de status */
+    .status-item {
+        display: flex;
+        flex-direction: column-reverse; /* Inverte a ordem */
+        margin-bottom: 15px;
+    }
+    
+    .status-bar-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .status-bar {
+        order: -1; /* Coloca a barra antes dos inputs */
+        margin-bottom: 8px;
+    }
+    
+    .status-inputs {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    .status-input, 
+    .status-max-input {
+        width: 45% !important; /* Ajusta a largura dos inputs */
+        margin: 0 !important;
+    }
+    
+    .status-bar-container span {
+        display: none; /* Esconde a barra "/" em mobile */
+    }
+    
+    /* Ajuste fino para os labels */
+    .status-item label {
+        margin-bottom: 10px;
+        font-size: 15px;
+    }
+}
+
+/* Estilos gerais para as barras (funcionam em desktop e mobile) */
+.status-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #1a0033;
+    border: 1px solid #c053db;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.status-fill {
+    height: 100%;
+    width: 100%;
+    border-radius: 8px;
+    transition: width 0.3s ease;
+}
+
+#vida-fill {
+    background: linear-gradient(90deg, #f44336, #ff9800);
+}
+
+#estamina-fill {
+    background: linear-gradient(90deg, #2196F3, #00bcd4);
+}
+
+.status-inputs {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.status-input, .status-max-input {
+    width: 60px;
+    text-align: center;
+    background-color: #1a0033;
+    color: #c053db;
+    border: 1px solid #c053db;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+/* Estilos específicos para mobile */
+@media (max-width: 768px) {
+    .status-item {
+        margin-bottom: 20px;
+    }
+    
+    .status-bar {
+        height: 25px; /* Mais visível em mobile */
+        order: 1; /* Coloca a barra depois do label */
+        margin-top: 8px;
+    }
+    
+    .status-inputs {
+        order: 2; /* Coloca os inputs depois da barra */
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .status-input, .status-max-input {
+        width: 50px;
+        padding: 8px;
+    }
+    
+    .status-bar-container {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .status-bar-container span {
+        color: #c053db;
+        margin: 0 5px;
+    }
+}

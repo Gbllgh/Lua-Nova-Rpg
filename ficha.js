@@ -479,12 +479,22 @@ document.addEventListener('DOMContentLoaded', function() {
         function updateBar(currentId, maxId, fillId) {
             const current = parseInt(document.getElementById(currentId).value) || 0;
             const max = parseInt(document.getElementById(maxId).value) || 1;
-            document.getElementById(fillId).style.width = `${Math.min(100, (current / max) * 100)}%`;
+            const percentage = Math.min(100, (current / max) * 100);
+            document.getElementById(fillId).style.width = `${percentage}%`;
         }
+        
         updateBar('vida', 'vida-max', 'vida-fill');
         updateBar('estamina', 'estamina-max', 'estamina-fill');
     }
-
+    
+    // Certifique-se que está chamando a função quando os inputs mudam
+    document.getElementById('vida').addEventListener('input', updateStatusBars);
+    document.getElementById('vida-max').addEventListener('input', updateStatusBars);
+    document.getElementById('estamina').addEventListener('input', updateStatusBars);
+    document.getElementById('estamina-max').addEventListener('input', updateStatusBars);
+    
+    // E também no carregamento da página
+    window.addEventListener('load', updateStatusBars);
     // Mostra mensagem temporária
     function showTempMessage(text, type) {
         const div = document.createElement('div');

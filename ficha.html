@@ -51,11 +51,14 @@
                             <div class="status-bar" id="vida-bar">
                                 <div class="status-fill" id="vida-fill"></div>
                             </div>
-                            <input type="number" id="vida" value="10" class="status-input">
-                            <span>/</span>
-                            <input type="number" id="vida-max" min="1" value="10" class="status-max-input">
+                            <div class="status-inputs">
+                                <input type="number" id="vida" value="10" class="status-input">
+                                <span>/</span>
+                                <input type="number" id="vida-max" min="1" value="10" class="status-max-input">
+                            </div>
                         </div>
                     </div>
+                    
 
                     <!-- Barra de Estamina -->
                     <div class="status-item">
@@ -64,9 +67,11 @@
                             <div class="status-bar" id="estamina-bar">
                                 <div class="status-fill" id="estamina-fill"></div>
                             </div>
-                            <input type="number" id="estamina" value="10" class="status-input">
-                            <span>/</span>
-                            <input type="number" id="estamina-max" min="1" value="10" class="status-max-input">
+                            <div class="status-inputs">
+                                <input type="number" id="estamina" value="10" class="status-input">
+                                <span>/</span>
+                                <input type="number" id="estamina-max" min="1" value="10" class="status-max-input">
+                            </div>
                         </div>
                     </div>
                     
@@ -321,7 +326,9 @@
         <!-- As habilidades serão adicionadas aqui dinamicamente -->
         </div>
         <div class="controles-habilidades">
-        <button id="adicionar-habilidade" type="button">+ Adicionar Habilidade</button>
+            <button id="adicionar-habilidade" type="button">
+                <i class="fas fa-plus-circle"></i> Adicionar Habilidade
+            </button>
         </div>
     </div>
         <!-- Seção de Inventário -->
@@ -330,7 +337,9 @@
     <div id="itens-lista">
         <!-- Itens serão adicionados aqui dinamicamente -->
     </div>
-    <button type="button" id="adicionar-item" class="btn-inventario">+ Adicionar Item</button>
+    <button type="button" id="adicionar-item" class="btn-inventario">
+        <i class="fas fa-plus"></i> Adicionar Item
+    </button>
 </div>
 <!-- Seção de Armas -->
 <div class="armas-container">
