@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'jogador1': { name: 'Bia', password: 'renato', locked: false },
         'jogador2': { name: 'Pedro', password: 'airjordan', locked: false },
         'jogador3': { name: 'Julia', password: 'caim', locked: false },
-        'jogador4': { name: 'Kaillan', password: 'kaillan123', locked: false },
+        'jogador4': { name: 'Kaillan', password: 'sleepingwithsirens', locked: false },
         'jogador5': { name: 'Miguel', password: 'miguel123', locked: false },
         'jogador7': { name: 'Teste', password: 'Teste', locked: false },
 
