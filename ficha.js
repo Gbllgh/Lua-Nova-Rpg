@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('agilidade').value = dados.agilidade || "0";
         document.getElementById('inteligencia').value = dados.inteligencia || "0";
         document.getElementById('carisma').value = dados.carisma || "0";
-        document.getElementById('fortitude').value = dados.fortitude || "0";
+        document.getElementById('vigor').value = dados.vigor || "0";
         document.getElementById('historia').value = dados.historia || "";
         
         // Imagem do personagem
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
             agilidade: document.getElementById('agilidade').value,
             inteligencia: document.getElementById('inteligencia').value,
             carisma: document.getElementById('carisma').value,
-            fortitude: document.getElementById('fortitude').value,
+            vigor: document.getElementById('vigor').value,
             historia: document.getElementById('historia').value,
             imagemPersonagem: personagemImagem.src,
             vida: document.getElementById('vida').value,
