@@ -78,6 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Atributos básicos
         document.getElementById('nome-personagem').value = dados.nome || "";
         document.getElementById('chale').value = dados.chale || "";
+        document.getElementById('level').value = dados.chale || "1";
         document.getElementById('forca').value = dados.forca || "0";
         document.getElementById('agilidade').value = dados.agilidade || "0";
         document.getElementById('inteligencia').value = dados.inteligencia || "0";
