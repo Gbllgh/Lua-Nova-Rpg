@@ -194,6 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const dados = {
             nome: document.getElementById('nome-personagem').value,
             chale: document.getElementById('chale').value,
+            level: document.getElementById('level').value,
             forca: document.getElementById('forca').value,
             agilidade: document.getElementById('agilidade').value,
             inteligencia: document.getElementById('inteligencia').value,
