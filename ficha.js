@@ -224,13 +224,34 @@ document.addEventListener('DOMContentLoaded', function() {
     // ---------- FUNÇÕES AUXILIARES ----------
 
     // Configura atualizações em tempo real
-    function setupRealtimeUpdates(playerId) {
-        database.ref('fichas/' + playerId).on('value', (snapshot) => {
-            const dados = snapshot.val();
-            if (dados) preencherFicha(dados);
-        });
-    }
+function setupRealtimeUpdates(playerId) {
+    database.ref('fichas/' + playerId).on('value', (snapshot) => {
+        const dados = snapshot.val();
+        if (!dados) return;
 
+        // Captura o elemento focado e posição do cursor
+        const active = document.activeElement;
+        const isInput = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA');
+        const selectionStart = isInput ? active.selectionStart : null;
+        const selectionEnd = isInput ? active.selectionEnd : null;
+        const activeId = isInput ? active.id || active.name || active.className : null;
+
+        preencherFicha(dados);
+
+        // Tenta restaurar o foco e posição do cursor
+        if (isInput && activeId) {
+            const restored = document.querySelector(`#${activeId}`) || document.querySelector(`.${activeId}`);
+            if (restored) {
+                restored.focus();
+                try {
+                    restored.setSelectionRange(selectionStart, selectionEnd);
+                } catch (e) {
+                    // Campo pode não suportar seleção (ex: select)
+                }
+            }
+        }
+    });
+}
     // Coleta dados das habilidades
     function coletarHabilidades() {
         return Array.from(document.querySelectorAll('.habilidade-item')).map(item => ({
