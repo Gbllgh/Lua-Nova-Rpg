@@ -442,6 +442,23 @@ body {
     opacity: 0.8;
 }
 
+/* Last Update Info */
+.last-update {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(192, 83, 219, 0.2);
+    text-align: center;
+}
+
+.last-update small {
+    color: #9c27b0;
+    opacity: 0.8;
+}
+
+.last-update i {
+    margin-right: 5px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .dashboard-container {

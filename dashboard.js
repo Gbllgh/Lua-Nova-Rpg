@@ -61,30 +61,34 @@ document.addEventListener('DOMContentLoaded', function() {
         'Mitologia': 'Mitologia'
     };
 
-    // Estado da conexão
-    let isConnected = true;
+    // Estado da conexão e dados
+    let isConnected = false;
     let playersData = {};
+    let realtimeListeners = {};
 
     // ---------- FUNÇÕES PRINCIPAIS ----------
 
     // Inicializa o dashboard
     async function initDashboard() {
+        console.log('Inicializando dashboard...');
         showLoading(true);
         
         try {
             // Autentica anonimamente
             await auth.signInAnonymously();
+            console.log('Autenticação Firebase concluída');
+            
+            // Configura listeners em tempo real PRIMEIRO
+            setupRealtimeListeners();
             
             // Carrega dados iniciais
             await loadAllPlayersData();
             
-            // Configura listeners em tempo real
-            setupRealtimeListeners();
-            
-            // Renderiza o dashboard
+            // Renderiza o dashboard inicial
             renderDashboard();
             
             updateConnectionStatus(true);
+            console.log('Dashboard inicializado com sucesso');
         } catch (error) {
             console.error("Erro ao inicializar dashboard:", error);
             updateConnectionStatus(false);
@@ -94,8 +98,74 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Carrega dados de todos os jogadores
+    // Configura listeners em tempo real
+    function setupRealtimeListeners() {
+        console.log('Configurando listeners em tempo real...');
+        
+        // Listener para status de conexão
+        database.ref('.info/connected').on('value', (snapshot) => {
+            const connected = snapshot.val();
+            console.log('Status de conexão:', connected);
+            updateConnectionStatus(connected);
+        });
+
+        // Configura listener para cada jogador
+        Object.keys(players).forEach(playerId => {
+            console.log(`Configurando listener para ${players[playerId].name}`);
+            
+            const playerRef = database.ref('fichas/' + playerId);
+            
+            // Remove listener anterior se existir
+            if (realtimeListeners[playerId]) {
+                realtimeListeners[playerId].off();
+            }
+            
+            // Configura novo listener
+            realtimeListeners[playerId] = playerRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                console.log(`Dados atualizados para ${players[playerId].name}:`, data);
+                
+                if (data) {
+                    // Atualiza dados do jogador
+                    playersData[playerId] = {
+                        ...players[playerId],
+                        ...data,
+                        online: true,
+                        lastUpdate: data.ultimaAtualizacao || Date.now()
+                    };
+                } else {
+                    // Dados padrão se não existir ficha
+                    playersData[playerId] = {
+                        ...players[playerId],
+                        nome: '',
+                        chale: '',
+                        level: '1',
+                        vida: '10',
+                        vidaMax: '10',
+                        estamina: '10',
+                        estaminaMax: '10',
+                        defesa: '0',
+                        pericias: {},
+                        online: false,
+                        lastUpdate: null
+                    };
+                }
+                
+                // Re-renderiza apenas o card do jogador específico
+                renderPlayerCard(playerId);
+                
+                // Mostra notificação de atualização
+                showTempMessage(`${players[playerId].name} - dados atualizados`, 'info');
+            }, (error) => {
+                console.error(`Erro no listener do ${players[playerId].name}:`, error);
+            });
+        });
+    }
+
+    // Carrega dados de todos os jogadores (apenas inicial)
     async function loadAllPlayersData() {
+        console.log('Carregando dados iniciais...');
+        
         const promises = Object.keys(players).map(async (playerId) => {
             try {
                 const snapshot = await database.ref('fichas/' + playerId).once('value');
@@ -136,41 +206,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         await Promise.all(promises);
-    }
-
-    // Configura listeners em tempo real
-    function setupRealtimeListeners() {
-        Object.keys(players).forEach(playerId => {
-            database.ref('fichas/' + playerId).on('value', (snapshot) => {
-                const data = snapshot.val();
-                
-                if (data) {
-                    playersData[playerId] = {
-                        ...players[playerId],
-                        ...data,
-                        online: true,
-                        lastUpdate: data.ultimaAtualizacao || Date.now()
-                    };
-                } else if (!playersData[playerId]) {
-                    playersData[playerId] = {
-                        ...players[playerId],
-                        online: false
-                    };
-                }
-                
-                // Re-renderiza apenas o card do jogador específico
-                renderPlayerCard(playerId);
-            });
-        });
-
-        // Listener para status de conexão
-        database.ref('.info/connected').on('value', (snapshot) => {
-            updateConnectionStatus(snapshot.val());
-        });
+        console.log('Dados iniciais carregados:', playersData);
     }
 
     // Renderiza o dashboard completo
     function renderDashboard() {
+        console.log('Renderizando dashboard completo...');
         playersGrid.innerHTML = '';
         
         Object.keys(players).forEach(playerId => {
@@ -181,7 +222,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Renderiza card de um jogador específico
     function renderPlayerCard(playerId) {
         const player = playersData[playerId];
-        if (!player) return;
+        if (!player) {
+            console.log(`Dados não encontrados para ${playerId}`);
+            return;
+        }
+
+        console.log(`Renderizando card para ${player.name}:`, player);
 
         // Remove card existente se houver
         const existingCard = document.getElementById(`player-${playerId}`);
@@ -194,11 +240,21 @@ document.addEventListener('DOMContentLoaded', function() {
         card.id = `player-${playerId}`;
         
         // Calcula porcentagens para as barras
-        const vidaPercent = Math.min(100, (parseInt(player.vida || 0) / parseInt(player.vidaMax || 1)) * 100);
-        const estaminaPercent = Math.min(100, (parseInt(player.estamina || 0) / parseInt(player.estaminaMax || 1)) * 100);
+        const vidaAtual = parseInt(player.vida || 0);
+        const vidaMax = parseInt(player.vidaMax || 1);
+        const estaminaAtual = parseInt(player.estamina || 0);
+        const estaminaMax = parseInt(player.estaminaMax || 1);
+        
+        const vidaPercent = Math.min(100, Math.max(0, (vidaAtual / vidaMax) * 100));
+        const estaminaPercent = Math.min(100, Math.max(0, (estaminaAtual / estaminaMax) * 100));
         
         // Filtra perícias treinadas
         const periciasTreinadas = getTrainedPericias(player.pericias || {});
+
+        // Status online/offline
+        const statusClass = player.online ? 'online' : 'offline';
+        const statusIcon = player.online ? 'fa-circle' : 'fa-circle';
+        const statusColor = player.online ? '#4CAF50' : '#f44336';
 
         card.innerHTML = `
             <div class="player-header">
@@ -208,8 +264,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="chale">${player.chale ? `Chalé: ${player.chale}` : 'Sem chalé'}</div>
                     <div class="level">Nível ${player.level || '1'}</div>
                 </div>
-                <div class="player-status ${player.online ? 'online' : 'offline'}">
-                    <i class="fas fa-circle"></i>
+                <div class="player-status ${statusClass}" style="color: ${statusColor}">
+                    <i class="fas ${statusIcon}"></i>
                 </div>
             </div>
 
@@ -220,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="status-bar">
                             <div class="status-fill vida-fill" style="width: ${vidaPercent}%"></div>
                         </div>
-                        <span class="status-values">${player.vida || 0}/${player.vidaMax || 10}</span>
+                        <span class="status-values">${vidaAtual}/${vidaMax}</span>
                     </div>
                 </div>
 
@@ -230,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="status-bar">
                             <div class="status-fill estamina-fill" style="width: ${estaminaPercent}%"></div>
                         </div>
-                        <span class="status-values">${player.estamina || 0}/${player.estaminaMax || 10}</span>
+                        <span class="status-values">${estaminaAtual}/${estaminaMax}</span>
                     </div>
                 </div>
 
@@ -255,6 +311,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         '<div class="pericia-item"><span class="pericia-nome">Nenhuma perícia treinada</span></div>'
                     }
                 </div>
+            </div>
+
+            <div class="last-update">
+                <small><i class="fas fa-clock"></i> Última atualização: ${player.lastUpdate ? new Date(player.lastUpdate).toLocaleTimeString() : 'Nunca'}</small>
             </div>
         `;
 
@@ -310,6 +370,12 @@ document.addEventListener('DOMContentLoaded', function() {
             <i class="fas fa-${connected ? 'wifi' : 'wifi-slash'}"></i>
             ${connected ? 'Conectado' : 'Desconectado'}
         `;
+        
+        if (connected) {
+            console.log('✅ Conectado ao Firebase - atualizações em tempo real ativas');
+        } else {
+            console.log('❌ Desconectado do Firebase - sem atualizações em tempo real');
+        }
     }
 
     // Mostra/esconde loading
@@ -328,8 +394,9 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
-    // Atualiza dados manualmente
+    // Atualiza dados manualmente (botão de refresh)
     async function refreshData() {
+        console.log('Refresh manual solicitado');
         const originalText = refreshBtn.innerHTML;
         refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Atualizando...';
         refreshBtn.disabled = true;
@@ -337,7 +404,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             await loadAllPlayersData();
             renderDashboard();
-            showTempMessage('Dados atualizados com sucesso!', 'success');
+            showTempMessage('Dados atualizados manualmente!', 'success');
         } catch (error) {
             console.error("Erro ao atualizar:", error);
             showTempMessage('Erro ao atualizar dados', 'error');
@@ -364,10 +431,12 @@ document.addEventListener('DOMContentLoaded', function() {
             opacity: 0;
             transform: translateX(100%);
             transition: all 0.3s ease;
+            font-size: 14px;
         `;
         
         if (type === 'success') message.style.background = '#4CAF50';
         if (type === 'error') message.style.background = '#f44336';
+        if (type === 'info') message.style.background = '#2196F3';
         
         document.body.appendChild(message);
         
@@ -385,25 +454,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     }
 
+    // Limpa listeners ao sair
+    function cleanup() {
+        console.log('Limpando listeners...');
+        Object.keys(realtimeListeners).forEach(playerId => {
+            if (realtimeListeners[playerId]) {
+                database.ref('fichas/' + playerId).off('value', realtimeListeners[playerId]);
+            }
+        });
+        database.ref('.info/connected').off();
+    }
+
     // ---------- EVENT LISTENERS ----------
 
     refreshBtn.addEventListener('click', refreshData);
 
     logoutBtn.addEventListener('click', () => {
         if (confirm('Deseja sair do dashboard?')) {
+            cleanup();
             auth.signOut().then(() => {
                 window.location.href = 'index.html';
             });
         }
     });
 
-    // Auto-refresh a cada 30 segundos
-    setInterval(() => {
-        if (isConnected) {
-            console.log('Auto-refresh executado');
-        }
-    }, 30000);
+    // Cleanup ao fechar a página
+    window.addEventListener('beforeunload', cleanup);
 
     // ---------- INICIALIZAÇÃO ----------
+    console.log('Iniciando dashboard GM...');
     initDashboard();
 });
