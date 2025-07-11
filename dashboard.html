@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard GM - Lua Nova</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1><i class="fas fa-crown"></i> Dashboard do Mestre</h1>
+            <div class="header-controls">
+                <button id="refresh-btn" class="btn-refresh">
+                    <i class="fas fa-sync-alt"></i> Atualizar
+                </button>
+                <button id="logout-btn" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            </div>
+        </header>
+
+        <div class="connection-status" id="connection-status">
+            <i class="fas fa-wifi"></i> Conectado
+        </div>
+
+        <div class="players-grid" id="players-grid">
+            <!-- Players cards will be dynamically generated here -->
+        </div>
+
+        <div class="loading-overlay" id="loading-overlay">
+            <div class="loading-spinner">
+                <i class="fas fa-dice-d20 fa-spin"></i>
+                <p>Carregando dados dos jogadores...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

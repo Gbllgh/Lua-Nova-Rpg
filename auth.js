@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'jogador5': { name: 'Miguel', password: 'miguel123', locked: false },
         'jogador6': { name: 'Teste', password: 'Teste', locked: false },
         'jogador7': { name: 'Teste2', password: 'Teste', locked: false },
+        'gm': { name: 'Mestre', password: 'mestre123', locked: false }
 
     };
 
@@ -112,9 +113,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }));
             
             // Redirecionamento
-            setTimeout(() => {
-                window.location.href = 'ficha.html';
-            }, 1000);
+            if (playerId === 'gm') {
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            } else {
+                setTimeout(() => {
+                    window.location.href = 'ficha.html';
+                }, 1000);
+            }
             
         } catch (firebaseError) {
             console.error("Erro no Firebase Auth:", firebaseError);
@@ -124,9 +131,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: players[playerId].name
             }));
             
-            setTimeout(() => {
-                window.location.href = 'ficha.html';
-            }, 1000);
+            if (playerId === 'gm') {
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            } else {
+                setTimeout(() => {
+                    window.location.href = 'ficha.html';
+                }, 1000);
+            }
         }
     }
 

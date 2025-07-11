@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login GM - Lua Nova RPG</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="login-container">
+        <h1><i class="fas fa-crown"></i> Login do Mestre</h1>
+        <div id="login-message" class="message"></div>
+        
+        <div class="form-group">
+            <label for="gm-password" class="inline-label">Senha do GM:</label>
+            <div class="password-container">
+                <input type="password" id="gm-password" placeholder="Digite a senha do mestre">
+                <i class="fas fa-eye-slash" id="toggle-password"></i>
+            </div>
+        </div>
+
+        <button id="login-btn">
+            <span id="login-text">Acessar Dashboard</span>
+            <div id="login-spinner" class="spinner hidden"></div>
+        </button>
+
+        <div class="back-link">
+            <a href="index.html"><i class="fas fa-arrow-left"></i> Voltar ao login dos jogadores</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const gmPassword = document.getElementById('gm-password');
+            const loginBtn = document.getElementById('login-btn');
+            const loginMessage = document.getElementById('login-message');
+            const togglePassword = document.getElementById('toggle-password');
+            const loginText = document.getElementById('login-text');
+            const loginSpinner = document.getElementById('login-spinner');
+
+            // Senha do GM (altere para uma senha segura)
+            const GM_PASSWORD = 'mestre123';
+
+            // Toggle password visibility
+            togglePassword.addEventListener('click', function() {
+                const type = gmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+                gmPassword.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+
+            // Login function
+            async function fazerLogin() {
+                const password = gmPassword.value.trim();
+
+                if (!password) {
+                    showMessage('Por favor, digite a senha', 'error');
+                    return;
+                }
+
+                startLoading();
+
+                // Simula delay de autenticação
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                if (password === GM_PASSWORD) {
+                    showMessage('Login bem-sucedido! Redirecionando...', 'success');
+                    
+                    // Armazena sessão do GM
+                    sessionStorage.setItem('gmSession', JSON.stringify({
+                        authenticated: true,
+                        timestamp: Date.now()
+                    }));
+                    
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+                } else {
+                    showMessage('Senha incorreta!', 'error');
+                    gmPassword.value = '';
+                    gmPassword.focus();
+                }
+
+                stopLoading();
+            }
+
+            // Helper functions
+            function showMessage(text, type) {
+                loginMessage.textContent = text;
+                loginMessage.className = 'message ' + (type || '');
+                loginMessage.style.display = 'block';
+                
+                if (type !== 'error') {
+                    setTimeout(() => {
+                        loginMessage.style.display = 'none';
+                    }, 5000);
+                }
+            }
+
+            function startLoading() {
+                loginBtn.disabled = true;
+                loginText.textContent = 'Verificando...';
+                loginSpinner.classList.add('active');
+            }
+
+            function stopLoading() {
+                loginBtn.disabled = false;
+                loginText.textContent = 'Acessar Dashboard';
+                loginSpinner.classList.remove('active');
+            }
+
+            // Event listeners
+            loginBtn.addEventListener('click', fazerLogin);
+            gmPassword.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') fazerLogin();
+            });
+
+            // Focus no campo de senha
+            gmPassword.focus();
+        });
+    </script>
+
+    <style>
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #c053db;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .back-link a:hover {
+            color: #9c27b0;
+        }
+
+        #login-container h1 i {
+            color: #ffd700;
+            margin-right: 10px;
+        }
+    </style>
+</body>
+</html>
