@@ -316,6 +316,64 @@ body {
     z-index: 1;
 }
 
+/* Attributes Section */
+.attributes-section {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(192, 83, 219, 0.2);
+}
+
+.attributes-section h4 {
+    color: #c053db;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.attributes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+.attribute-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(26, 0, 51, 0.6);
+    border: 1px solid rgba(192, 83, 219, 0.3);
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.attribute-item:hover {
+    background: rgba(26, 0, 51, 0.8);
+    border-color: #c053db;
+    transform: translateY(-1px);
+}
+
+.attribute-name {
+    color: #c053db;
+    font-weight: 500;
+    font-size: 0.9em;
+}
+
+.attribute-value {
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 1.1em;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+    min-width: 25px;
+    text-align: center;
+    padding: 2px 6px;
+    background: rgba(255, 215, 0, 0.1);
+    border-radius: 4px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
 /* Perícias */
 .pericias-section h4 {
     color: #c053db;

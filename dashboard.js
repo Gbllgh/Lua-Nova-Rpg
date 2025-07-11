@@ -212,10 +212,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Renderiza o dashboard completo
     function renderDashboard() {
         console.log('Renderizando dashboard completo...');
-        playersGrid.innerHTML = '';
+        // Não limpa o grid completo, apenas garante que todos os players estão presentes
         
         Object.keys(players).forEach(playerId => {
-            renderPlayerCard(playerId);
+            // Só renderiza se o card não existir
+            const existingCard = document.getElementById(`player-${playerId}`);
+            if (!existingCard) {
+                renderPlayerCard(playerId);
+            }
         });
     }
 
@@ -256,6 +260,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const statusIcon = player.online ? 'fa-circle' : 'fa-circle';
         const statusColor = player.online ? '#4CAF50' : '#f44336';
 
+        // Se o card já existe, apenas atualiza o conteúdo
+        if (existingCard) {
+            updateExistingCard(existingCard, player, vidaPercent, estaminaPercent, periciasTreinadas, statusClass, statusIcon, statusColor);
+            return;
+        }
+
+        // Cria novo card apenas se não existir
         card.innerHTML = `
             <div class="player-header">
                 <img class="player-avatar" src="${player.imagemPersonagem || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjYzA1M2RiIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptMCAzYzEuNjYgMCAzIDEuMzQgMyAzcy0xLjM0IDMtMyAzLTMtMS4zNC0zLTMgMS4zNC0zIDMtM3ptMCAxNC4yYy0yLjUgMC00LjcxLTEuMjgtNi0yLjIyLjAzLTEuOTkgNC0zLjA4IDYtMy4wOCAxLjk5IDAgNS45NyAxLjA5IDYgMy4wOC0xLjI5Ljk0LTMuNSAyLjIyLTYgMi4yMnoiLz48L3N2Zz4='}" alt="${player.name}">
@@ -266,6 +277,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class="player-status ${statusClass}" style="color: ${statusColor}">
                     <i class="fas ${statusIcon}"></i>
+                </div>
+            </div>
+
+            <div class="attributes-section">
+                <h4><i class="fas fa-dumbbell"></i> Atributos</h4>
+                <div class="attributes-grid">
+                    <div class="attribute-item">
+                        <span class="attribute-name">Força:</span>
+                        <span class="attribute-value">${player.forca || 0}</span>
+                    </div>
+                    <div class="attribute-item">
+                        <span class="attribute-name">Agilidade:</span>
+                        <span class="attribute-value">${player.agilidade || 0}</span>
+                    </div>
+                    <div class="attribute-item">
+                        <span class="attribute-name">Inteligência:</span>
+                        <span class="attribute-value">${player.inteligencia || 0}</span>
+                    </div>
+                    <div class="attribute-item">
+                        <span class="attribute-name">Carisma:</span>
+                        <span class="attribute-value">${player.carisma || 0}</span>
+                    </div>
+                    <div class="attribute-item">
+                        <span class="attribute-name">Vigor:</span>
+                        <span class="attribute-value">${player.vigor || 0}</span>
+                    </div>
                 </div>
             </div>
 
@@ -319,6 +356,68 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
 
         playersGrid.appendChild(card);
+    }
+
+    // Atualiza card existente sem recriar
+    function updateExistingCard(card, player, vidaPercent, estaminaPercent, periciasTreinadas, statusClass, statusIcon, statusColor) {
+        // Atualiza header
+        const avatar = card.querySelector('.player-avatar');
+        const playerName = card.querySelector('.player-info h3');
+        const chale = card.querySelector('.player-info .chale');
+        const level = card.querySelector('.player-info .level');
+        const status = card.querySelector('.player-status');
+        
+        if (avatar) avatar.src = player.imagemPersonagem || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjYzA1M2RiIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptMCAzYzEuNjYgMCAzIDEuMzQgMyAzcy0xLjM0IDMtMyAzLTMtMS4zNC0zLTMgMS4zNC0zIDMtM3ptMCAxNC4yYy0yLjUgMC00LjcxLTEuMjgtNi0yLjIyLjAzLTEuOTkgNC0zLjA4IDYtMy4wOCAxLjk5IDAgNS45NyAxLjA5IDYgMy4wOC0xLjI5Ljk0LTMuNSAyLjIyLTYgMi4yMnoiLz48L3N2Zz4=';
+        if (playerName) playerName.textContent = player.nome || player.name;
+        if (chale) chale.textContent = player.chale ? `Chalé: ${player.chale}` : 'Sem chalé';
+        if (level) level.textContent = `Nível ${player.level || '1'}`;
+        if (status) {
+            status.className = `player-status ${statusClass}`;
+            status.style.color = statusColor;
+            status.innerHTML = `<i class="fas ${statusIcon}"></i>`;
+        }
+        
+        // Atualiza atributos
+        const attributeValues = card.querySelectorAll('.attribute-value');
+        if (attributeValues.length >= 5) {
+            attributeValues[0].textContent = player.forca || 0;
+            attributeValues[1].textContent = player.agilidade || 0;
+            attributeValues[2].textContent = player.inteligencia || 0;
+            attributeValues[3].textContent = player.carisma || 0;
+            attributeValues[4].textContent = player.vigor || 0;
+        }
+        
+        // Atualiza barras de status
+        const vidaFill = card.querySelector('.vida-fill');
+        const estaminaFill = card.querySelector('.estamina-fill');
+        const vidaValues = card.querySelector('.status-section .status-values');
+        const estaminaValues = card.querySelectorAll('.status-section .status-values')[1];
+        const defenseValue = card.querySelector('.defense-value');
+        
+        if (vidaFill) vidaFill.style.width = `${vidaPercent}%`;
+        if (estaminaFill) estaminaFill.style.width = `${estaminaPercent}%`;
+        if (vidaValues) vidaValues.textContent = `${parseInt(player.vida || 0)}/${parseInt(player.vidaMax || 1)}`;
+        if (estaminaValues) estaminaValues.textContent = `${parseInt(player.estamina || 0)}/${parseInt(player.estaminaMax || 1)}`;
+        if (defenseValue) defenseValue.textContent = player.defesa || 0;
+        
+        // Atualiza perícias
+        const periciaGrid = card.querySelector('.pericias-grid');
+        if (periciaGrid) {
+            periciaGrid.innerHTML = periciasTreinadas.length > 0 ? 
+                periciasTreinadas.map(pericia => `
+                    <div class="pericia-item">
+                        <span class="pericia-nome">${pericia.nome}</span>
+                        <span class="pericia-nivel ${pericia.classe}">${pericia.nivel}</span>
+                    </div>
+                `).join('') : 
+                '<div class="pericia-item"><span class="pericia-nome">Nenhuma perícia treinada</span></div>';
+        }
+        
+        // Atualiza timestamp
+        const lastUpdate = card.querySelector('.last-update small');
+        if (lastUpdate) {
+            lastUpdate.innerHTML = `<i class="fas fa-clock"></i> Última atualização: ${player.lastUpdate ? new Date(player.lastUpdate).toLocaleTimeString() : 'Nunca'}`;
+        }
     }
 
     // Filtra perícias treinadas
