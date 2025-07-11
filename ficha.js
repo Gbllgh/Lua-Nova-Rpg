@@ -229,29 +229,52 @@ function setupRealtimeUpdates(playerId) {
         const dados = snapshot.val();
         if (!dados) return;
 
-        // Captura o elemento focado e posição do cursor
+        // Captura o campo atualmente focado
         const active = document.activeElement;
         const isInput = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA');
-        const selectionStart = isInput ? active.selectionStart : null;
-        const selectionEnd = isInput ? active.selectionEnd : null;
-        const activeId = isInput ? active.id || active.name || active.className : null;
 
+        let path = null;
+        let selectionStart = null;
+        let selectionEnd = null;
+
+        if (isInput) {
+            // Caminho completo até o container mais próximo que represente um "bloco"
+            let container = active.closest('[class*="-item"], .item-inventario, .resistencia-item');
+
+            if (container) {
+                const containerClass = container.className;
+                const containerIndex = Array.from(container.parentElement.children).indexOf(container);
+                const inputClass = active.className;
+
+                path = {
+                    containerSelector: `.${containerClass.split(' ').join('.')}`,
+                    containerIndex,
+                    inputClass: inputClass.split(' ').map(cls => `.${cls}`).join(' '),
+                };
+                selectionStart = active.selectionStart;
+                selectionEnd = active.selectionEnd;
+            }
+        }
+
+        // Atualiza visual
         preencherFicha(dados);
 
-        // Tenta restaurar o foco e posição do cursor
-        if (isInput && activeId) {
-            const restored = document.querySelector(`#${activeId}`) || document.querySelector(`.${activeId}`);
-            if (restored) {
-                restored.focus();
-                try {
-                    restored.setSelectionRange(selectionStart, selectionEnd);
-                } catch (e) {
-                    // Campo pode não suportar seleção (ex: select)
+        // Restaura foco
+        if (path) {
+            try {
+                const container = document.querySelectorAll(path.containerSelector)[path.containerIndex];
+                const input = container && container.querySelector(path.inputClass);
+                if (input) {
+                    input.focus();
+                    input.setSelectionRange(selectionStart, selectionEnd);
                 }
+            } catch (e) {
+                console.warn("Erro ao restaurar foco:", e);
             }
         }
     });
 }
+
     // Coleta dados das habilidades
     function coletarHabilidades() {
         return Array.from(document.querySelectorAll('.habilidade-item')).map(item => ({
