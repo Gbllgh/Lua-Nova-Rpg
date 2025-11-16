@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'jogador5': { name: 'Miguel', id: 'jogador5' },
         'jogador6': { name: 'Teste', id: 'jogador6' },
         'jogador7': { name: 'Teste2', id: 'jogador7' },
-        'jogador8': { name: 'Rafael', id: 'jogador' }
+        'jogador8': { name: 'Rafael', id: 'jogador8' }
     };
 
     // Mapeamento de perícias para português
